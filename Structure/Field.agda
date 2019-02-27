@@ -9,9 +9,9 @@ open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
 open import Level using (_⊔_)
 
+
 F\[_] : A → A → Set ℓ
 F\[ c ] x = (F x) × (¬ (x ≈ c))
-
 
 record IsField (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A)
               (_⁻¹ : A → A) : Set (a ⊔ ℓ) where
