@@ -5,9 +5,12 @@ An alternative construction other than the standard Agda library
 
 - The motivation came when I tried to define Field using the standard library.
   - When defining Field, it is unavoidable to deal with substructures.
-  - When we wrap the subset information into the carries, we do get rid of defining nor proving closures.
-  - However, we will have to explicitly differenciate between the elements of the structure and those of the substructures, with different names.
+  - When we wrap the subtype information into the carriers, we do get rid of defining nor proving closures.
+  - However, we will have to explicitly differenciate between the elements of a structure and those of the substructures, with different types and names.
 
-- The alternative way here, elements under the same universe share their names , while having different properties, which indecates the substructures where they belong.
+- In the alternative here, every structure is defined over a carrying type, with an equivalence relation and a predicate.
+  - elements under the same carrier share their names , while having different properties with the equivalence and the predicate, which indecates the substructures where they could belong.
+  - This simplifies the notations when operating on the elements.
+  - However, the subtype information hides into the proof, as the closure properties.
 
 - Basic reasoning for preorder and equivalence on such definition for structures are also provided.
