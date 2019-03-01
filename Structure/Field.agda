@@ -1,9 +1,9 @@
 
 module Structure.Field {a ℓ} {A : Set a}
-        (F : A → Set ℓ) (_≈_ : A → A → Set ℓ) where
+        (_≈_ : A → A → Set ℓ) (F : A → Set ℓ) where
 
 open import Structure.Properties _≈_
-open import Structure.DivisionRing _≈_ public
+open import Structure.DivisionRing _≈_
 open import Structure.Substructure _≈_ F
   renaming (S\[_] to F\[_])
 

@@ -32,6 +32,8 @@ record IsRing (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ 
     ;   ⁻¹-cong           to -‿cong
     ;     ⁻¹-uniqueˡ      to -‿uniqueˡ
     ;     ⁻¹-uniqueʳ      to -‿uniqueʳ
+    ;     ∙-cancelˡ       to +-cancelˡ
+    ;     ∙-cancelʳ       to +-cancelʳ
     ;     _/_             to _-_
     ;     _/-close_       to _-‿close_
     ;     /-congˡ         to -‿congˡ

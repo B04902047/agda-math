@@ -25,6 +25,50 @@ record IsGroup (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ 
   _⁻¹-inverseʳ : {x : A} → G x → (x ∙ (x ⁻¹)) ≈ ε
   x∈G ⁻¹-inverseʳ = proj₂ (x∈G ⁻¹-inverse)
 
+  ∙-cancelˡ : {x y z : A} → G x → G y → G z
+              →  (z ∙ x) ≈ (z ∙ y) → x ≈ y
+  ∙-cancelˡ {x} {y} {z} x∈G y∈G z∈G z∙x≈z∙y
+    = begin
+      x
+    ≈˘⟨ x∈G , ε-identityˡ x∈G ⟩
+      ε ∙ x
+    ≈˘⟨ ε-close ∙-close x∈G , ∙-congˡ (z⁻¹∈G ∙-close z∈G) ε-close x∈G (z∈G ⁻¹-inverseˡ) ⟩
+      ((z ⁻¹) ∙ z) ∙ x
+    ≈⟨ (z⁻¹∈G ∙-close z∈G) ∙-close x∈G , ∙-assoc z⁻¹∈G z∈G x∈G ⟩
+      (z ⁻¹) ∙ (z ∙ x)
+    ≈⟨ z⁻¹∈G ∙-close (z∈G ∙-close x∈G) , ∙-congʳ (z∈G ∙-close x∈G) (z∈G ∙-close y∈G) z⁻¹∈G z∙x≈z∙y ⟩
+      (z ⁻¹) ∙ (z ∙ y)
+    ≈˘⟨ z⁻¹∈G ∙-close (z∈G ∙-close y∈G) , ∙-assoc z⁻¹∈G z∈G y∈G ⟩
+      ((z ⁻¹) ∙ z) ∙ y
+    ≈⟨ (z⁻¹∈G ∙-close z∈G) ∙-close y∈G , ∙-congˡ (z⁻¹∈G ∙-close z∈G) ε-close y∈G (z∈G ⁻¹-inverseˡ) ⟩
+      ε ∙ y
+    ≈⟨ ε-close ∙-close y∈G , ε-identityˡ y∈G ⟩
+      y
+    ∎⟨ y∈G ⟩
+    where z⁻¹∈G = z∈G ⁻¹-close
+
+  ∙-cancelʳ : {x y z : A} → G x → G y → G z
+              →  (x ∙ z) ≈ (y ∙ z) → x ≈ y
+  ∙-cancelʳ {x} {y} {z} x∈G y∈G z∈G x∙z≈y∙z
+    = begin
+      x
+    ≈˘⟨ x∈G , x∈G ε-identityʳ ⟩
+      x ∙ ε
+    ≈˘⟨ x∈G ∙-close ε-close , ∙-congʳ (z∈G ∙-close z⁻¹∈G) ε-close x∈G (z∈G ⁻¹-inverseʳ) ⟩
+      x ∙ (z ∙ (z ⁻¹))
+    ≈˘⟨ x∈G ∙-close (z∈G ∙-close z⁻¹∈G) , ∙-assoc x∈G z∈G z⁻¹∈G ⟩
+      (x ∙ z) ∙ (z ⁻¹)
+    ≈⟨ (x∈G ∙-close z∈G) ∙-close z⁻¹∈G , ∙-congˡ (x∈G ∙-close z∈G) (y∈G ∙-close z∈G) z⁻¹∈G x∙z≈y∙z ⟩
+      (y ∙ z) ∙ (z ⁻¹)
+    ≈⟨ (y∈G ∙-close z∈G) ∙-close z⁻¹∈G , ∙-assoc y∈G z∈G z⁻¹∈G ⟩
+      y ∙ (z ∙ (z ⁻¹))
+    ≈⟨ y∈G ∙-close (z∈G ∙-close z⁻¹∈G) , ∙-congʳ (z∈G ∙-close z⁻¹∈G) ε-close y∈G (z∈G ⁻¹-inverseʳ) ⟩
+      y ∙ ε
+    ≈⟨ y∈G ∙-close ε-close , y∈G ε-identityʳ ⟩
+      y
+    ∎⟨ y∈G ⟩
+    where z⁻¹∈G = z∈G ⁻¹-close
+
   ⁻¹-uniqueˡ : {x y : A} → G x → G y → (x ∙ y) ≈ ε → x ≈ (y ⁻¹)
   ⁻¹-uniqueˡ {x} {y} x∈G y∈G x∙y≈ε
     = begin
