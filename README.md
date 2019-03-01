@@ -1,7 +1,7 @@
 # algebraic-structures
-An alternative construction other than the standard Agda library
+An alternative construction of basic algebraic structures other than the Agda standard library
 
-- Instead of parameterizing the structures on certain carriers by equivalence relations, as the standard Agda library does, in this repository are the structures parameterized by not only equivalence relations, but also predicates on the carriers.
+- Instead of parameterizing the structures on certain carriers by equivalence relations, as the Agda standard library does, in this repository are the structures parameterized by not only equivalence relations, but also predicates on the carriers.
 
 - The motivation came when I tried to define Field using the standard library.
   - When defining Field, it is unavoidable to deal with substructures.
@@ -14,3 +14,5 @@ An alternative construction other than the standard Agda library
   - However, the subtype information hides into the proof, as the closure properties.
 
 - Basic reasoning for preorder and equivalence on such definition for structures are also provided.
+
+- This repository uses the Agda standard library, and should be put under the same path as it is.
