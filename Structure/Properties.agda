@@ -1,5 +1,5 @@
 
-module Properties {a ℓ} {A : Set a}
+module Structure.Properties {a ℓ} {A : Set a}
            (_≈_ : A → A → Set ℓ) (S : A → Set ℓ) where
 
 open import Level using (_⊔_)
@@ -16,12 +16,6 @@ Symmetric = {x y : A} → S x → S y → x ≈ y → y ≈ x
 Transitive : Set (a ⊔ ℓ)
 Transitive = {x y z : A} → S x → S y → S z
               → x ≈ y → y ≈ z → x ≈ z
-
-record IsEquivalence : Set (a ⊔ ℓ) where
-  field
-    refl  : Reflexive
-    sym   : Symmetric
-    trans : Transitive
 
 ------------------------------------------------------------------------
 -- Binary Operation Properties

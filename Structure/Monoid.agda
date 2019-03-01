@@ -1,9 +1,9 @@
 
-module Monoid {a ℓ} {A : Set a}
+module Structure.Monoid {a ℓ} {A : Set a}
         (_≈_ : A → A → Set ℓ) (M : A → Set ℓ) where
 
-open import Properties _≈_ M
-open import Semigroup _≈_ M public
+open import Structure.Properties _≈_ M
+open import Structure.Semigroup _≈_ M public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)

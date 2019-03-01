@@ -1,9 +1,9 @@
 
-module Group {a ℓ} {A : Set a}
+module Structure.Group {a ℓ} {A : Set a}
         (_≈_ : A → A → Set ℓ) (G : A → Set ℓ) where
 
-open import Properties _≈_ G
-open import Monoid _≈_ G public
+open import Structure.Properties _≈_ G
+open import Structure.Monoid _≈_ G public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
