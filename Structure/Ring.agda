@@ -1,24 +1,25 @@
 
-module Structure.Ring {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) (R : A → Set ℓ) where
+module Structure.Ring
+        {a ℓ} {A : Set a}
+        (_≈_ : A → A → Set ℓ) where
 
-open import Structure.Properties _≈_ R
-open import Structure.Group _≈_ R public
+open import Structure.Properties _≈_
+open import Structure.Group _≈_ public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
 open import Level using (_⊔_)
 
-record IsRing (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ ℓ) where
+record IsRing (R : A → Set ℓ) (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ ℓ) where
   field
-    +-isAbelianGroup : IsAbelianGroup _+_ 0# -_
-    *-isMonoid       : IsMonoid _*_ 1#
-    distrib          : _*_ DistributesOver _+_
+    +-isAbelianGroup : IsAbelianGroup R _+_ 0# -_
+    *-isMonoid       : IsMonoid R _*_ 1#
+    distrib          : _DistributesOver_ R _*_ _+_
 
-  distribˡ : _*_ DistributesOverˡ _+_
+  distribˡ : _DistributesOverˡ_ R _*_ _+_
   distribˡ = proj₁ distrib
 
-  distribʳ : _*_ DistributesOverʳ _+_
+  distribʳ : _DistributesOverʳ_ R _*_ _+_
   distribʳ = proj₂ distrib
 
   open IsAbelianGroup +-isAbelianGroup public
@@ -73,7 +74,7 @@ record IsRing (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ 
     ;     ∙-congʳ     to *-congʳ
     )
 
-  0-zeroˡ : LeftZero _*_ 0#
+  0-zeroˡ : LeftZero R _*_ 0#
   0-zeroˡ {x} x∈R =
     begin
       0# * x
@@ -94,7 +95,7 @@ record IsRing (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ 
           0*x∈R  = 0∈R *-close x∈R
           -0*x∈R = -‿close 0*x∈R
 
-  _0-zeroʳ : RightZero _*_ 0#
+  _0-zeroʳ : RightZero R _*_ 0#
   _0-zeroʳ {x} x∈R =
     begin
       x * 0#
@@ -146,15 +147,16 @@ record IsRing (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ 
   -- postulate
   --   zeroRing : (1# ≈ 0#) → (a : A) → (¬ (¬ (a ≈ 1#)))
 
-record IsCommutativeRing (+ * : A → A → A)
+record IsCommutativeRing (R : A → Set ℓ)
+          (+ * : A → A → A)
           (0# 1# : A) (- : A → A) : Set (a ⊔ ℓ) where
   field
-    isRing : IsRing + * 0# 1# -
-    *-comm : Commutative *
+    isRing : IsRing R + * 0# 1# -
+    *-comm : Commutative R *
 
   open IsRing isRing public
 
-  *-isCommutativeMonoid : IsCommutativeMonoid * 1#
+  *-isCommutativeMonoid : IsCommutativeMonoid R * 1#
   *-isCommutativeMonoid =  record
     { isSemigroup = *-isSemigroup
     ; ε-close     = 1-close
@@ -162,10 +164,11 @@ record IsCommutativeRing (+ * : A → A → A)
     ; ∙-comm        = *-comm
     }
 
-record IsIntegralDomain (_+_ _*_ : A → A → A)
+record IsIntegralDomain (R : A → Set ℓ)
+          (_+_ _*_ : A → A → A)
           (0# 1# : A) (- : A → A) : Set (a ⊔ ℓ) where
   field
-    isRing : IsRing _+_ _*_ 0# 1# -
+    isRing : IsRing R _+_ _*_ 0# 1# -
     noNonzeroZeroDivisors : {x y : A} → R x → R y
                           → ¬ (x ≈ 0#) → ¬ (y ≈ 0#)
                           → ¬ ((x * y) ≈ 0#)

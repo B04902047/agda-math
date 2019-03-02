@@ -1,21 +1,23 @@
 
-module Structure.Group {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) (G : A → Set ℓ) where
+module Structure.Group
+        {a ℓ} {A : Set a}
+        (_≈_ : A → A → Set ℓ)  where
 
-open import Structure.Properties _≈_ G
-open import Structure.Monoid _≈_ G public
+open import Structure.Properties _≈_
+open import Structure.Monoid _≈_ public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
 open import Level using (_⊔_)
 
 
-record IsGroup (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ ℓ) where
+record IsGroup (G : A → Set ℓ) (_∙_ : A → A → A)
+                (ε : A) (_⁻¹ : A → A) : Set (a ⊔ ℓ) where
   field
-    isMonoid   : IsMonoid _∙_ ε
-    _⁻¹-close : Closed₁ _⁻¹
-    ⁻¹-cong    : Congruent₁ _⁻¹
-    _⁻¹-inverse : Inverse _∙_ ε _⁻¹
+    isMonoid   : IsMonoid G _∙_ ε
+    _⁻¹-close : Closed₁ G _⁻¹
+    ⁻¹-cong    : Congruent₁ G _⁻¹
+    _⁻¹-inverse : Inverse G _∙_ ε _⁻¹
 
   open IsMonoid isMonoid public
 
@@ -108,10 +110,10 @@ record IsGroup (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ 
   _/_ : A → A → A
   x / y = x ∙ (y ⁻¹)
 
-  _/-close_ : Closed₂ _/_
+  _/-close_ : Closed₂ G _/_
   x∈G /-close y∈G = x∈G ∙-close (y∈G ⁻¹-close)
 
-  /-congˡ : LeftCongruent _/_
+  /-congˡ : LeftCongruent G _/_
   /-congˡ {x} {y} {z} x∈G y∈G z∈G x≈y
     = begin
         x / z
@@ -119,7 +121,7 @@ record IsGroup (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ 
         y / z
       ∎⟨ y∈G /-close z∈G ⟩
 
-  /-congʳ : RightCongruent _/_
+  /-congʳ : RightCongruent G _/_
   /-congʳ {x} {y} {z} x∈G y∈G z∈G x≈y
     = begin
         z / x
@@ -127,15 +129,15 @@ record IsGroup (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ 
         z / y
       ∎⟨ z∈G /-close y∈G ⟩
 
-record IsAbelianGroup (∙ : A → A → A)
+record IsAbelianGroup (G : A → Set ℓ) (∙ : A → A → A)
                       (ε : A) (⁻¹ : A → A) : Set (a ⊔ ℓ) where
   field
-    isGroup : IsGroup ∙ ε ⁻¹
-    ∙-comm    : Commutative ∙
+    isGroup : IsGroup G ∙ ε ⁻¹
+    ∙-comm    : Commutative G ∙
 
   open IsGroup isGroup public
 
-  isCommutativeMonoid : IsCommutativeMonoid ∙ ε
+  isCommutativeMonoid : IsCommutativeMonoid G ∙ ε
   isCommutativeMonoid = record
     { isSemigroup = isSemigroup
     ; ε-close     = ε-close

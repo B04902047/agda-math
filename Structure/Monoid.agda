@@ -1,27 +1,28 @@
 
 module Structure.Monoid {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) (M : A → Set ℓ) where
+        (_≈_ : A → A → Set ℓ) where
 
-open import Structure.Properties _≈_ M
-open import Structure.Semigroup _≈_ M public
+open import Structure.Properties _≈_
+open import Structure.Semigroup _≈_ public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
 open import Level using (_⊔_)
 
 
-record IsMonoid (_∙_ : A → A → A) (ε : A) : Set (a ⊔ ℓ) where
+record IsMonoid (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
+                                        : Set (a ⊔ ℓ) where
   field
-    isSemigroup : IsSemigroup _∙_
-    ε-close     : Closed₀ ε
-    ε-identity  : Identity _∙_ ε
+    isSemigroup : IsSemigroup M _∙_
+    ε-close     : Closed₀ M ε
+    ε-identity  : Identity M _∙_ ε
 
   open IsSemigroup isSemigroup public
 
-  ε-identityˡ : LeftIdentity _∙_ ε
+  ε-identityˡ : LeftIdentity M _∙_ ε
   ε-identityˡ = proj₁ ε-identity
 
-  _ε-identityʳ : RightIdentity _∙_ ε
+  _ε-identityʳ : RightIdentity M _∙_ ε
   _ε-identityʳ = proj₂ ε-identity
 
   ε-uniqueˡ : {e : A} → M e → ({x : A} → M x → ((e ∙ x) ≈ x)) → (e ≈ ε)
@@ -42,12 +43,13 @@ record IsMonoid (_∙_ : A → A → A) (ε : A) : Set (a ⊔ ℓ) where
                         ∎⟨ ε-close ⟩
 
 record IsCommutativeMonoid
-            (_∙_ : A → A → A) (ε : A) : Set (a ⊔ ℓ) where
+          (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
+                                      : Set (a ⊔ ℓ) where
   field
-    isSemigroup : IsSemigroup _∙_
-    ε-close     : Closed₀ ε
-    ε-identityˡ : LeftIdentity _∙_ ε
-    ∙-comm      : Commutative _∙_
+    isSemigroup : IsSemigroup M _∙_
+    ε-close     : Closed₀ M ε
+    ε-identityˡ : LeftIdentity M _∙_ ε
+    ∙-comm      : Commutative M _∙_
 
   open IsSemigroup isSemigroup public
 
@@ -65,9 +67,10 @@ record IsCommutativeMonoid
   --   }
 
 record IsIdempotentCommutativeMonoid
-                (∙ : A → A → A) (ε : A) : Set (a ⊔ ℓ) where
+          (M : A → Set ℓ) (∙ : A → A → A) (ε : A)
+                                      : Set (a ⊔ ℓ) where
   field
-    isCommutativeMonoid : IsCommutativeMonoid ∙ ε
-    idem                : Idempotent ∙
+    isCommutativeMonoid : IsCommutativeMonoid M ∙ ε
+    idem                : Idempotent M ∙
 
   open IsCommutativeMonoid isCommutativeMonoid public

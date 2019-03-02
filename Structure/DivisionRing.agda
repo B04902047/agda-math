@@ -1,34 +1,35 @@
-module Structure.DivisionRing {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) (R : A → Set ℓ) where
+module Structure.DivisionRing
+        {a ℓ} {A : Set a}
+        (_≈_ : A → A → Set ℓ)where
 
-open import Structure.Substructure _≈_ R
-  renaming (S\[_] to R\[_])
+open import Structure.Subtype
 
 open import Structure.Properties _≈_
-open import Structure.Ring _≈_ R public
+open import Structure.Ring _≈_ public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
 open import Level using (_⊔_)
 
 
-record IsDivisionRing (_+_ _*_ : A → A → A)
+record IsDivisionRing (R : A → Set ℓ)
+          (_+_ _*_ : A → A → A)
           (0# 1# : A) (- _⁻¹ : A → A) : Set (a ⊔ ℓ) where
   field
-    isRing      : IsRing _+_ _*_ 0# 1# -
-    _⁻¹-close   : Closed₁ (R\[ 0# ]) _⁻¹
-    ⁻¹-cong     : Congruent₁ (R\[ 0# ]) _⁻¹
-    _⁻¹-inverse : Inverse (R\[ 0# ]) _*_ 1# _⁻¹
+    isRing      : IsRing R _+_ _*_ 0# 1# -
+    _⁻¹-close   : Closed₁ (R \[ _≈ 0# ]) _⁻¹
+    ⁻¹-cong     : Congruent₁ (R \[ _≈ 0# ]) _⁻¹
+    _⁻¹-inverse : Inverse (R \[ _≈ 0# ]) _*_ 1# _⁻¹
 
   open IsRing isRing public
 
-  _⁻¹-inverseˡ : LeftInverse (R\[ 0# ]) _*_ 1# _⁻¹
+  _⁻¹-inverseˡ : LeftInverse (R \[ _≈ 0# ]) _*_ 1# _⁻¹
   (x∈R,x!≈0) ⁻¹-inverseˡ  = proj₁ ((x∈R,x!≈0) ⁻¹-inverse)
 
-  _⁻¹-inverseʳ : RightInverse (R\[ 0# ]) _*_ 1# _⁻¹
+  _⁻¹-inverseʳ : RightInverse (R \[ _≈ 0# ]) _*_ 1# _⁻¹
   (x∈R,x!≈0) ⁻¹-inverseʳ  = proj₂ ((x∈R,x!≈0) ⁻¹-inverse)
 
-  *-cancel\[0]ˡ : {x y z : A} → R x → R y → (R\[ 0# ]) z
+  *-cancel\[0]ˡ : {x y z : A} → R x → R y → (R \[ _≈ 0# ]) z
               →  (z * x) ≈ (z * y) → x ≈ y
   *-cancel\[0]ˡ {x} {y} {z} x∈R y∈R (z∈R , z!≈0) z*x≈z*y
     = begin
@@ -52,7 +53,7 @@ record IsDivisionRing (_+_ _*_ : A → A → A)
       z⁻¹∈R = proj₁ ((z∈R , z!≈0) ⁻¹-close)
       z⁻¹!≈0 = proj₂ ((z∈R , z!≈0) ⁻¹-close)
 
-  *-cancel\[0]ʳ : {x y z : A} → R x → R y → (R\[ 0# ]) z
+  *-cancel\[0]ʳ : {x y z : A} → R x → R y → (R \[ _≈ 0# ]) z
               →  (x * z) ≈ (y * z) → x ≈ y
   *-cancel\[0]ʳ {x} {y} {z} x∈R y∈R (z∈R , z!≈0) x*z≈y*z
     = begin

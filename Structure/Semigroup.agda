@@ -1,46 +1,51 @@
 
-module Structure.Semigroup {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) (S : A → Set ℓ) where
+module Structure.Semigroup
+        {a ℓ} {A : Set a}
+        (_≈_ : A → A → Set ℓ) where
 
-open import Structure.Properties _≈_ S
-open import Structure.Equivalence _≈_ S public
+open import Structure.Properties _≈_
+open import Structure.Equivalence public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
 open import Level using (_⊔_)
 
 
-record IsMagma (∙ : A → A → A) : Set (a ⊔ ℓ) where
+record IsMagma (S : A → Set ℓ) (∙ : A → A → A)
+                                        : Set (a ⊔ ℓ) where
   field
-    isEquivalence : IsEquivalence
-    _∙-close_     : Closed₂ ∙
-    ∙-cong        : Congruent₂ ∙
+    isEquivalence : IsEquivalence _≈_ S
+    _∙-close_     : Closed₂ S ∙
+    ∙-cong        : Congruent₂ S ∙
 
   open IsEquivalence isEquivalence public
 
-  ∙-congˡ : LeftCongruent ∙
+  ∙-congˡ : LeftCongruent S ∙
   ∙-congˡ x∈S y∈S z∈S x≈y = ∙-cong x∈S y∈S z∈S z∈S x≈y (refl z∈S)
 
-  ∙-congʳ : RightCongruent ∙
+  ∙-congʳ : RightCongruent S ∙
   ∙-congʳ x∈S y∈S z∈S x≈y = ∙-cong z∈S z∈S x∈S y∈S (refl z∈S) x≈y
 
-record IsSemigroup (∙ : A → A → A) : Set (a ⊔ ℓ) where
+record IsSemigroup (S : A → Set ℓ) (∙ : A → A → A)
+                                      : Set (a ⊔ ℓ) where
   field
-    isMagma : IsMagma ∙
-    ∙-assoc   : Associative ∙
+    isMagma : IsMagma S ∙
+    ∙-assoc   : Associative S ∙
 
   open IsMagma isMagma public
 
-record IsBand (∙ : A → A → A) : Set (a ⊔ ℓ) where
+record IsBand (S : A → Set ℓ) (∙ : A → A → A)
+                                      : Set (a ⊔ ℓ) where
   field
-    isSemigroup : IsSemigroup ∙
-    idem        : Idempotent ∙
+    isSemigroup : IsSemigroup S ∙
+    idem        : Idempotent S ∙
 
   open IsSemigroup isSemigroup public
 
-record IsSemilattice (∧ : A → A → A) : Set (a ⊔ ℓ) where
+record IsSemilattice (S : A → Set ℓ) (∧ : A → A → A)
+                                      : Set (a ⊔ ℓ) where
   field
-    isBand : IsBand ∧
-    comm   : Commutative ∧
+    isBand : IsBand S ∧
+    comm   : Commutative S ∧
 
   open IsBand isBand public renaming (∙-cong to ∧-cong)

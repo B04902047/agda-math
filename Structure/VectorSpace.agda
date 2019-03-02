@@ -7,13 +7,13 @@
 
 module Structure.VectorSpace {a b ℓ₁ ℓ₂}
         {A : Set a} {B : Set b}
-        (_≈ᵍ_ : A → A → Set ℓ₁) (G : A → Set ℓ₁)
-        (_≈ᶠ_ : B → B → Set ℓ₂) (F : B → Set ℓ₂)
+        (_≈ᵍ_ : A → A → Set ℓ₁)
+        (_≈ᶠ_ : B → B → Set ℓ₂)
         where
 
 open import Structure.Properties
-import Structure.Group _≈ᵍ_ G as ⟨G,≈ᵍ⟩
-import Structure.Field _≈ᶠ_ F as ⟨F,≈ᶠ⟩
+import Structure.Group _≈ᵍ_ as ⟨A,≈ᵍ⟩
+import Structure.Field _≈ᶠ_ as ⟨B,≈ᶠ⟩
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
@@ -21,12 +21,15 @@ open import Level using (_⊔_)
 
 
 record IsVectorSpace
-          (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
-          (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
-          (_*ᵛ_ : B → A → A) : Set (a ⊔ b ⊔ ℓ₁ ⊔ ℓ₂) where
+        (G : A → Set ℓ₁)
+        (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
+        (F : B → Set ℓ₂)
+        (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
+        (_*ᵛ_ : B → A → A)
+                                : Set (a ⊔ b ⊔ ℓ₁ ⊔ ℓ₂) where
   field
-    isAbelianGroup    : ⟨G,≈ᵍ⟩.IsAbelianGroup _+ᵍ_ 0ᵍ -ᵍ
-    isField           : ⟨F,≈ᶠ⟩.IsField _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ
+    isAbelianGroup    : ⟨A,≈ᵍ⟩.IsAbelianGroup G _+ᵍ_ 0ᵍ -ᵍ
+    isField           : ⟨B,≈ᶠ⟩.IsField F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ
     _*ᵛ-close_        : {c : B} {x : A} → F c → G x → G (c *ᵛ x)
     *ᵛ-congˡ          : {c d : B} → {x : A} → c ≈ᶠ d → (c *ᵛ x) ≈ᵍ (d *ᵛ x)
     *ᵛ-congʳ          : {x y : A} {c : B} → x ≈ᵍ y → (c *ᵛ x) ≈ᵍ (c *ᵛ y)
