@@ -9,12 +9,12 @@ open import Structure.Subtype
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
-open import Level using (_⊔_)
+open import Level using (_⊔_; suc)
 
 
 record IsField (F : A → Set ℓ)
           (_+_ _*_ : A → A → A) (0# 1# : A)
-          (- _⁻¹ : A → A) : Set (a ⊔ ℓ) where
+          (- _⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
   field
     isDivisionRing : IsDivisionRing F _+_ _*_ 0# 1# - _⁻¹
     *-comm         : Commutative F _*_
@@ -32,9 +32,9 @@ record IsField (F : A → Set ℓ)
             1#
           ≈˘⟨ 1∈F , 1∈F 1-identityʳ ⟩
             1# * 1#
-          ≈˘⟨ 1∈F *-close 1∈F , *-congˡ x⁻¹*x∈F 1∈F 1∈F ((x∈F , x!≈0) ⁻¹-inverseˡ) ⟩
+          ≈˘⟨ 1∈F *-close 1∈F , *-congˡ x⁻¹*x∈F 1∈F 1∈F ((x∈F , x!≈0) ⁻¹-inverse\[0]ˡ) ⟩
             ((x ⁻¹) * x) * 1#
-          ≈˘⟨ x⁻¹*x∈F *-close 1∈F , *-congʳ (y∈F *-close y⁻¹∈F) 1∈F x⁻¹*x∈F ((y∈F , y!≈0) ⁻¹-inverseʳ) ⟩
+          ≈˘⟨ x⁻¹*x∈F *-close 1∈F , *-congʳ (y∈F *-close y⁻¹∈F) 1∈F x⁻¹*x∈F ((y∈F , y!≈0) ⁻¹-inverse\[0]ʳ) ⟩
             ((x ⁻¹) * x) * (y * (y ⁻¹))
           ≈˘⟨ x⁻¹*x∈F *-close (y∈F *-close y⁻¹∈F) , *-assoc x⁻¹*x∈F y∈F y⁻¹∈F ⟩
             (((x ⁻¹) * x) * y) * (y ⁻¹)
@@ -50,10 +50,10 @@ record IsField (F : A → Set ℓ)
           where
             1∈F = 1-close
             0∈F = 0-close
-            x⁻¹∈F = proj₁ ((x∈F , x!≈0) ⁻¹-close)
-            x⁻¹!≈0 = proj₂ ((x∈F , x!≈0) ⁻¹-close)
-            y⁻¹∈F = proj₁ ((y∈F , y!≈0) ⁻¹-close)
-            y⁻¹!≈0 = proj₂ ((y∈F , y!≈0) ⁻¹-close)
+            x⁻¹∈F = proj₁ ((x∈F , x!≈0) ⁻¹-close\[0])
+            x⁻¹!≈0 = proj₂ ((x∈F , x!≈0) ⁻¹-close\[0])
+            y⁻¹∈F = proj₁ ((y∈F , y!≈0) ⁻¹-close\[0])
+            y⁻¹!≈0 = proj₂ ((y∈F , y!≈0) ⁻¹-close\[0])
             x⁻¹*x∈F = x⁻¹∈F *-close x∈F
 
   isIntegralDomain : IsIntegralDomain F _+_ _*_ 0# 1# -
@@ -62,41 +62,14 @@ record IsField (F : A → Set ℓ)
     ; noNonzeroZeroDivisors = noNonzeroZeroDivisors
     }
 
-  refl\[0] : Reflexive (F \[ _≈ 0# ])
-  refl\[0] (x∈F , _) = refl x∈F
-
-  sym\[0] : Symmetric (F \[ _≈ 0# ])
-  sym\[0] (x∈F , _) (y∈F , _) = sym x∈F y∈F
-
-  trans\[0] : Transitive (F \[ _≈ 0# ])
-  trans\[0] (x∈F , _) (y∈F , _) (z∈F , _) = trans x∈F y∈F z∈F
-
-  isEquivalence\[0] : IsEquivalence _≈_ (F \[ _≈ 0# ])
-  isEquivalence\[0] = record
-    { refl  = refl\[0]
-    ; sym   = sym\[0]
-    ; trans = trans\[0]
-    }
-
   _*-close\[0]_ : Closed₂ (F \[ _≈ 0# ]) _*_
   (x∈F , x!≈0) *-close\[0] (y∈F , y!≈0)
     = (x∈F *-close y∈F , noNonzeroZeroDivisors x∈F y∈F x!≈0 y!≈0)
 
-  *-cong\[0] : Congruent₂ (F \[ _≈ 0# ]) _*_
-  *-cong\[0] (x∈F , _ ) (y∈F , _ ) (u∈F , _ ) (v∈F , _ ) x≈y u≈v
-    = *-cong x∈F y∈F u∈F v∈F x≈y u≈v
-
-  *-congˡ\[0] : LeftCongruent (F \[ _≈ 0# ]) _*_
-  *-congˡ\[0] = getLeftCongruent (F \[ _≈ 0# ]) refl\[0] *-cong\[0]
-
-  *-congʳ\[0] : RightCongruent (F \[ _≈ 0# ]) _*_
-  *-congʳ\[0] = getRightCongruent (F \[ _≈ 0# ]) refl\[0] *-cong\[0]
-
   *-isMagma\[0] : IsMagma (F \[ _≈ 0# ]) _*_
   *-isMagma\[0] = record
-    { isEquivalence = isEquivalence\[0]
-    ; _∙-close_     = _*-close\[0]_
-    ; ∙-cong        = *-cong\[0]
+    { isSetoid  = isSetoid\[0]
+    ; _∙-close_ = _*-close\[0]_
     }
 
   *-assoc\[0] : Associative (F \[ _≈ 0# ]) _*_
@@ -124,16 +97,15 @@ record IsField (F : A → Set ℓ)
   *-isGroup\[0] : IsGroup (F \[ _≈ 0# ]) _*_ 1# _⁻¹
   *-isGroup\[0] = record
     { isMonoid = *-isMonoid\[0]
-    ; _⁻¹-close    = _⁻¹-close
-    ; ⁻¹-cong      = ⁻¹-cong
-    ; _⁻¹-inverse  = _⁻¹-inverse
+    ; _⁻¹-close    = _⁻¹-close\[0]
+    ; _⁻¹-inverse  = _⁻¹-inverse\[0]
     }
 
   *-comm\[0] : Commutative (F \[ _≈ 0# ]) _*_
   *-comm\[0] (x∈F , _ ) (y∈F , _ ) = *-comm x∈F y∈F
 
-  *-isAbelianGroup : IsAbelianGroup (F \[ _≈ 0# ]) _*_ 1# _⁻¹
-  *-isAbelianGroup = record
+  *-isAbelianGroup\[0] : IsAbelianGroup (F \[ _≈ 0# ]) _*_ 1# _⁻¹
+  *-isAbelianGroup\[0] = record
     { isGroup = *-isGroup\[0]
     ; ∙-comm   = *-comm\[0]
     }

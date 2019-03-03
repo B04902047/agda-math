@@ -5,21 +5,24 @@ module Structure.Group
 
 open import Structure.Properties _≈_
 open import Structure.Monoid _≈_ public
+open import Structure.Subtype
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
-open import Level using (_⊔_)
+open import Level using (_⊔_; suc)
 
 
 record IsGroup (G : A → Set ℓ) (_∙_ : A → A → A)
-                (ε : A) (_⁻¹ : A → A) : Set (a ⊔ ℓ) where
+                (ε : A) (_⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
   field
-    isMonoid   : IsMonoid G _∙_ ε
-    _⁻¹-close : Closed₁ G _⁻¹
-    ⁻¹-cong    : Congruent₁ G _⁻¹
+    isMonoid    : IsMonoid G _∙_ ε
+    _⁻¹-close   : Closed₁ G _⁻¹
     _⁻¹-inverse : Inverse G _∙_ ε _⁻¹
 
   open IsMonoid isMonoid public
+
+  ⁻¹-cong : Congruent₁ G _⁻¹
+  ⁻¹-cong = ap _⁻¹
 
   _⁻¹-inverseˡ : {x : A} → G x → ((x ⁻¹) ∙ x) ≈ ε
   x∈G ⁻¹-inverseˡ = proj₁ (x∈G ⁻¹-inverse)
@@ -129,8 +132,49 @@ record IsGroup (G : A → Set ℓ) (_∙_ : A → A → A)
         z / y
       ∎⟨ z∈G /-close y∈G ⟩
 
+record _IsSubgroupOf_
+          (H : A → Set ℓ) (G : A → Set ℓ)
+          (∙ : A → A → A) (ε : A) (⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+  field
+    H⊆G       : H ⊆ G
+    G-isGroup : IsGroup G ∙ ε ⁻¹
+    H-isGroup : IsGroup H ∙ ε ⁻¹
+
+record _IsSubgroupOf'_
+          (H : A → Set ℓ) (G : A → Set ℓ)
+          (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+  field
+    H⊆G         : H ⊆ G
+    G-isGroup   : IsGroup G _∙_ ε _⁻¹
+    _∙-close-H_ : Closed₂ H _∙_
+    ε-close-H   : H ε
+    _⁻¹-close-H : Closed₁ H _⁻¹
+
+  open IsGroup G-isGroup renaming (isMonoid to G-isMonoid)
+
+  H-isSubmonoidOf'-G : (H IsSubmonoidOf' G) _∙_ ε
+  H-isSubmonoidOf'-G = record
+    { N⊆M         = H⊆G
+    ; M-isMonoid  = G-isMonoid
+    ; ε-close-N   = ε-close-H
+    ; _∙-close-N_ = _∙-close-H_
+    }
+
+  H-isMonoid : IsMonoid H _∙_ ε
+  H-isMonoid = _IsSubmonoidOf'_.N-isMonoid H-isSubmonoidOf'-G
+
+  _⁻¹-inverse-H : Inverse H _∙_ ε _⁻¹
+  _⁻¹-inverse-H x∈H = (H⊆G x∈H) ⁻¹-inverse
+
+  H-isGroup : IsGroup H _∙_ ε _⁻¹
+  H-isGroup = record
+    { isMonoid    = H-isMonoid
+    ; _⁻¹-close   = _⁻¹-close-H
+    ; _⁻¹-inverse = _⁻¹-inverse-H
+    }
+
 record IsAbelianGroup (G : A → Set ℓ) (∙ : A → A → A)
-                      (ε : A) (⁻¹ : A → A) : Set (a ⊔ ℓ) where
+                      (ε : A) (⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
   field
     isGroup : IsGroup G ∙ ε ⁻¹
     ∙-comm    : Commutative G ∙

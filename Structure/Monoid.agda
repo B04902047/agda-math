@@ -4,14 +4,15 @@ module Structure.Monoid {a ℓ} {A : Set a}
 
 open import Structure.Properties _≈_
 open import Structure.Semigroup _≈_ public
+open import Structure.Subtype
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
-open import Level using (_⊔_)
+open import Level using (_⊔_; suc)
 
 
 record IsMonoid (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
-                                        : Set (a ⊔ ℓ) where
+                                        : Set (a ⊔ suc ℓ) where
   field
     isSemigroup : IsSemigroup M _∙_
     ε-close     : Closed₀ M ε
@@ -44,7 +45,7 @@ record IsMonoid (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
 
 record IsCommutativeMonoid
           (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
-                                      : Set (a ⊔ ℓ) where
+                                      : Set (a ⊔ suc ℓ) where
   field
     isSemigroup : IsSemigroup M _∙_
     ε-close     : Closed₀ M ε
@@ -68,9 +69,56 @@ record IsCommutativeMonoid
 
 record IsIdempotentCommutativeMonoid
           (M : A → Set ℓ) (∙ : A → A → A) (ε : A)
-                                      : Set (a ⊔ ℓ) where
+                                      : Set (a ⊔ suc ℓ) where
   field
     isCommutativeMonoid : IsCommutativeMonoid M ∙ ε
     idem                : Idempotent M ∙
 
   open IsCommutativeMonoid isCommutativeMonoid public
+
+
+record _IsSubmonoidOf_
+        (N : A → Set ℓ) (M : A → Set ℓ)
+        (_∙_ : A → A → A) (ε : A) : Set (a ⊔ suc ℓ) where
+  field
+    N⊆M        : N ⊆ M
+    M-isMonoid : IsMonoid M _∙_ ε
+    N-isMonoid : IsMonoid N _∙_ ε
+
+record _IsSubmonoidOf'_
+        (N : A → Set ℓ) (M : A → Set ℓ)
+        (_∙_ : A → A → A) (ε : A) : Set (a ⊔ suc ℓ) where
+  field
+    N⊆M         : N ⊆ M
+    M-isMonoid  : IsMonoid M _∙_ ε
+    ε-close-N   : N ε
+    _∙-close-N_ : Closed₂ N _∙_
+
+  open IsMonoid M-isMonoid
+    renaming (isSemigroup to M-isSemigroup)
+
+  N-isSubsemigroupOf-M : (N IsSubsemigroupOf M) _∙_
+  N-isSubsemigroupOf-M = record
+    { T⊆S           = N⊆M
+    ; S-isSemigroup = M-isSemigroup
+    ; _∙-close-T_    = _∙-close-N_
+    }
+
+  N-isSemigroup : IsSemigroup N _∙_
+  N-isSemigroup = _IsSubsemigroupOf_.T-isSemigroup N-isSubsemigroupOf-M
+
+  ε-identityˡ-N : LeftIdentity N _∙_ ε
+  ε-identityˡ-N x∈N = ε-identityˡ (N⊆M x∈N)
+
+  _ε-identityʳ-N : RightIdentity N _∙_ ε
+  x∈N ε-identityʳ-N  = (N⊆M x∈N) ε-identityʳ
+
+  ε-identity-N : Identity N _∙_ ε
+  ε-identity-N = (ε-identityˡ-N , _ε-identityʳ-N)
+
+  N-isMonoid : IsMonoid N _∙_ ε
+  N-isMonoid = record
+    { isSemigroup = N-isSemigroup
+    ; ε-close     = ε-close-N
+    ; ε-identity  = ε-identity-N
+    }

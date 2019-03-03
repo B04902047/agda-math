@@ -8,9 +8,11 @@ open import Structure.Group _≈_ public
 
 open import Data.Product using (_×_; proj₁; proj₂; _,_)
 open import Relation.Nullary using (¬_)
-open import Level using (_⊔_)
+open import Level using (_⊔_; suc)
 
-record IsRing (R : A → Set ℓ) (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A → A) : Set (a ⊔ ℓ) where
+record IsRing (R : A → Set ℓ)
+              (_+_ _*_ : A → A → A)
+              (0# 1# : A) (-_ : A → A) : Set (a ⊔ suc ℓ) where
   field
     +-isAbelianGroup : IsAbelianGroup R _+_ 0# -_
     *-isMonoid       : IsMonoid R _*_ 1#
@@ -50,7 +52,6 @@ record IsRing (R : A → Set ℓ) (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A 
     ;       ∙-assoc       to +-assoc
     ;       isMagma       to +-isMagma
     ;         _∙-close_   to _+-close_
-    ;         ∙-cong      to +-cong
     ;         ∙-congˡ     to +-congˡ
     ;         ∙-congʳ     to +-congʳ
     ; isCommutativeMonoid to +-isCommutativeMonoid
@@ -69,7 +70,6 @@ record IsRing (R : A → Set ℓ) (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A 
     ;   ∙-assoc       to *-assoc
     ;   isMagma       to *-isMagma
     ;     _∙-close_   to _*-close_
-    ;     ∙-cong      to *-cong
     ;     ∙-congˡ     to *-congˡ
     ;     ∙-congʳ     to *-congʳ
     )
@@ -149,7 +149,7 @@ record IsRing (R : A → Set ℓ) (_+_ _*_ : A → A → A) (0# 1# : A) (-_ : A 
 
 record IsCommutativeRing (R : A → Set ℓ)
           (+ * : A → A → A)
-          (0# 1# : A) (- : A → A) : Set (a ⊔ ℓ) where
+          (0# 1# : A) (- : A → A) : Set (a ⊔ suc ℓ) where
   field
     isRing : IsRing R + * 0# 1# -
     *-comm : Commutative R *
@@ -166,7 +166,7 @@ record IsCommutativeRing (R : A → Set ℓ)
 
 record IsIntegralDomain (R : A → Set ℓ)
           (_+_ _*_ : A → A → A)
-          (0# 1# : A) (- : A → A) : Set (a ⊔ ℓ) where
+          (0# 1# : A) (- : A → A) : Set (a ⊔ suc ℓ) where
   field
     isRing : IsRing R _+_ _*_ 0# 1# -
     noNonzeroZeroDivisors : {x y : A} → R x → R y
