@@ -7,8 +7,7 @@ open import Structure.Subtype
 open import Structure.Properties _≈_
 open import Structure.Setoid _≈_ public
 
-open import Data.Product using (_×_; proj₁; proj₂; _,_)
-open import Relation.Nullary using (¬_)
+open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 

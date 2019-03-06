@@ -6,8 +6,7 @@ open import Structure.Properties _≈_
 open import Structure.Semigroup _≈_ public
 open import Structure.Subtype
 
-open import Data.Product using (_×_; proj₁; proj₂; _,_)
-open import Relation.Nullary using (¬_)
+open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 

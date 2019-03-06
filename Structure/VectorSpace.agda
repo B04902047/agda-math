@@ -3,7 +3,7 @@
 -- ᵃ ᵇ ᶜ ᵈ ᵉ ᶠ ᵍ ʰ ⁱ ʲ ᵏ ˡ ᵐ ⁿ ᵒ ᵖ ʳ ˢ ᵗ ᵘ ᵛ ʷ ˣ ʸ ᶻ
 -- ᴬ ᴮ ᴰ ᴱ ᴳ ᴴ ᴵ ᴶ ᴷ ᴸ ᴹ ᴺ ᴼ ᴾ ᴿ ᵀ ᵁ ⱽ ᵂ
 -- ₐ ₑ ₕ ᵢ ⱼ ₖ ₗ ₘ ₙ ₒ ₚ ᵣ ₛ ₜ ᵤ ᵥ ₓ
--- ᵅ ᵝ ᵞ ᵟ ᵋ ᶿ ᶥ ᶲ ᵠ ᵡ ᵦ ᵧ ᵨ ᵩ ᵪ'
+-- ᵅ ᵝ ᵞ ᵟ ᵋ ᶿ ᶥ ᶲ ᵠ ᵡ ᵦ ᵧ ᵨ ᵩ ᵪ
 
 module Structure.VectorSpace {a b ℓ₁ ℓ₂}
         {A : Set a} {B : Set b}
@@ -16,8 +16,7 @@ import Structure.Group _≈ᵍ_ as ⟨A,≈ᵍ⟩
 import Structure.Field _≈ᶠ_ as ⟨B,≈ᶠ⟩
 open import Structure.Subtype
 
-open import Data.Product using (_×_; proj₁; proj₂; _,_)
-open import Relation.Nullary using (¬_)
+open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 
@@ -182,35 +181,48 @@ record IsVectorSpace
 
   0ᶠ-scalarZero : {x : A} → G x → (0ᶠ *ᵛ x) ≈ᵍ 0ᵍ
   0ᶠ-scalarZero {x} x∈G
-    = +ᵍ-cancelˡ (0ᶠ-close *ᵛ-close x∈G) 0ᵍ-close (0ᶠ-close *ᵛ-close x∈G) 0*x+0*x=0*x
-    where 0*x+0*x=0*x = begin
-                        (0ᶠ *ᵛ x) +ᵍ (0ᶠ *ᵛ x)
-                      ≈˘⟨ (0ᶠ-close *ᵛ-close x∈G) +ᵍ-close (0ᶠ-close *ᵛ-close x∈G) , distribʳ x∈G 0ᶠ-close 0ᶠ-close ⟩
-                        (0ᶠ +ᶠ 0ᶠ) *ᵛ x
-                      ≈⟨ (0ᶠ-close +ᶠ-close 0ᶠ-close) *ᵛ-close x∈G , *ᵛ-congˡ (0ᶠ-close +ᶠ-close 0ᶠ-close) 0ᶠ-close x∈G (0ᶠ-close 0ᶠ-identityʳ) ⟩
-                        0ᶠ *ᵛ x
-                      ≈˘⟨ 0ᶠ-close *ᵛ-close x∈G , (0ᶠ-close *ᵛ-close x∈G) 0ᵍ-identityʳ ⟩
-                        (0ᶠ *ᵛ x) +ᵍ 0ᵍ
-                      ∎⟨ (0ᶠ-close *ᵛ-close x∈G) +ᵍ-close 0ᵍ-close ⟩
+    = +ᵍ-cancelˡ (0ᶠ-close *ᵛ-close x∈G) 0ᵍ-close (0ᶠ-close *ᵛ-close x∈G) 0*x+0*x=0*x+0
+    where 0*x+0*x=0*x+0 = begin
+                          (0ᶠ *ᵛ x) +ᵍ (0ᶠ *ᵛ x)
+                        ≈˘⟨ (0ᶠ-close *ᵛ-close x∈G) +ᵍ-close (0ᶠ-close *ᵛ-close x∈G) , distribʳ x∈G 0ᶠ-close 0ᶠ-close ⟩
+                          (0ᶠ +ᶠ 0ᶠ) *ᵛ x
+                        ≈⟨ (0ᶠ-close +ᶠ-close 0ᶠ-close) *ᵛ-close x∈G , *ᵛ-congˡ (0ᶠ-close +ᶠ-close 0ᶠ-close) 0ᶠ-close x∈G (0ᶠ-close 0ᶠ-identityʳ) ⟩
+                          0ᶠ *ᵛ x
+                        ≈˘⟨ 0ᶠ-close *ᵛ-close x∈G , (0ᶠ-close *ᵛ-close x∈G) 0ᵍ-identityʳ ⟩
+                          (0ᶠ *ᵛ x) +ᵍ 0ᵍ
+                        ∎⟨ (0ᶠ-close *ᵛ-close x∈G) +ᵍ-close 0ᵍ-close ⟩
+
+  0ᵍ-vectorZero : {c : B} → F c → (c *ᵛ 0ᵍ) ≈ᵍ 0ᵍ
+  0ᵍ-vectorZero {c} c∈F
+    = +ᵍ-cancelˡ (c∈F *ᵛ-close 0ᵍ-close) 0ᵍ-close (c∈F *ᵛ-close 0ᵍ-close) c*0+c*0=c*0+0
+    where c*0+c*0=c*0+0 = begin
+                          (c *ᵛ 0ᵍ) +ᵍ (c *ᵛ 0ᵍ)
+                        ≈˘⟨ (c∈F *ᵛ-close 0ᵍ-close) +ᵍ-close (c∈F *ᵛ-close 0ᵍ-close) , distribˡ c∈F 0ᵍ-close 0ᵍ-close ⟩
+                          c *ᵛ (0ᵍ +ᵍ 0ᵍ)
+                        ≈⟨ c∈F *ᵛ-close (0ᵍ-close +ᵍ-close 0ᵍ-close) , *ᵛ-congʳ (0ᵍ-close +ᵍ-close 0ᵍ-close) 0ᵍ-close c∈F (0ᵍ-close 0ᵍ-identityʳ) ⟩
+                          c *ᵛ 0ᵍ
+                        ≈˘⟨ c∈F *ᵛ-close 0ᵍ-close , (c∈F *ᵛ-close 0ᵍ-close) 0ᵍ-identityʳ ⟩
+                          (c *ᵛ 0ᵍ) +ᵍ 0ᵍ
+                        ∎⟨ (c∈F *ᵛ-close 0ᵍ-close) +ᵍ-close 0ᵍ-close ⟩
+
 
   Theorem-1-2 : {x : A} → G x → ((-ᶠ 1ᶠ) *ᵛ x) ≈ᵍ (-ᵍ x)
-  Theorem-1-2 {x} x∈G = -ᵍ‿uniqueˡ ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) x∈G -1*x+x≈0
-                        where -1*x+x≈0 = begin
-                                          ((-ᶠ 1ᶠ) *ᵛ x) +ᵍ x
-                                        ≈˘⟨ ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) +ᵍ-close x∈G , +ᵍ-congʳ ((1ᶠ-close *ᵛ-close x∈G)) x∈G ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) (1ᶠ-scalarIdentity x∈G) ⟩
-                                          ((-ᶠ 1ᶠ) *ᵛ x) +ᵍ (1ᶠ *ᵛ x)
-                                        ≈˘⟨ ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) +ᵍ-close (1ᶠ-close *ᵛ-close x∈G) , distribʳ x∈G (-ᶠ‿close 1ᶠ-close) 1ᶠ-close ⟩
-                                          ((-ᶠ 1ᶠ) +ᶠ 1ᶠ) *ᵛ x
-                                        ≈⟨ ((-ᶠ‿close 1ᶠ-close) +ᶠ-close 1ᶠ-close) *ᵛ-close x∈G , *ᵛ-congˡ ((-ᶠ‿close 1ᶠ-close) +ᶠ-close 1ᶠ-close) 0ᶠ-close x∈G (-ᶠ‿inverseˡ 1ᶠ-close) ⟩
-                                          0ᶠ *ᵛ x
-                                        ≈⟨ 0ᶠ-close *ᵛ-close x∈G , 0ᶠ-scalarZero x∈G ⟩
-                                          0ᵍ
-                                        ∎⟨ 0ᵍ-close ⟩
-
+  Theorem-1-2 {x} x∈G
+    = -ᵍ‿uniqueˡ ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) x∈G -1*x+x≈0
+    where -1*x+x≈0 = begin
+                      ((-ᶠ 1ᶠ) *ᵛ x) +ᵍ x
+                    ≈˘⟨ ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) +ᵍ-close x∈G , +ᵍ-congʳ ((1ᶠ-close *ᵛ-close x∈G)) x∈G ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) (1ᶠ-scalarIdentity x∈G) ⟩
+                      ((-ᶠ 1ᶠ) *ᵛ x) +ᵍ (1ᶠ *ᵛ x)
+                    ≈˘⟨ ((-ᶠ‿close 1ᶠ-close) *ᵛ-close x∈G) +ᵍ-close (1ᶠ-close *ᵛ-close x∈G) , distribʳ x∈G (-ᶠ‿close 1ᶠ-close) 1ᶠ-close ⟩
+                      ((-ᶠ 1ᶠ) +ᶠ 1ᶠ) *ᵛ x
+                    ≈⟨ ((-ᶠ‿close 1ᶠ-close) +ᶠ-close 1ᶠ-close) *ᵛ-close x∈G , *ᵛ-congˡ ((-ᶠ‿close 1ᶠ-close) +ᶠ-close 1ᶠ-close) 0ᶠ-close x∈G (-ᶠ‿inverseˡ 1ᶠ-close) ⟩
+                      0ᶠ *ᵛ x
+                    ≈⟨ 0ᶠ-close *ᵛ-close x∈G , 0ᶠ-scalarZero x∈G ⟩
+                      0ᵍ
+                    ∎⟨ 0ᵍ-close ⟩
 
 record _IsSubspaceOf_
-        (H : A → Set ℓ₁)
-        (G : A → Set ℓ₁)
+        (H G : A → Set ℓ₁)
         (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
         (F : B → Set ℓ₂)
         (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
@@ -222,8 +234,7 @@ record _IsSubspaceOf_
     H-isVectorSpace : IsVectorSpace H _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
 
 record _IsSubspaceOf'_
-        (H : A → Set ℓ₁)
-        (G : A → Set ℓ₁)
+        (H G : A → Set ℓ₁)
         (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
         (F : B → Set ℓ₂)
         (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
@@ -302,10 +313,132 @@ record _IsSubspaceOf'_
     ; distribˡ          = H-distribˡ
     ; distribʳ          = H-distribʳ
     }
-
-  Theorem-1-3 : (((H IsSubspaceOf G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
-  Theorem-1-3 = record
+  H-isSubspaceOf-G : (((H IsSubspaceOf G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
+  H-isSubspaceOf-G = record
     { H⊆G             = H⊆G
     ; G-isVectorSpace = G-isVectorSpace
     ; H-isVectorSpace = H-isVectorSpace
     }
+
+record _IsSubspaceOf''_
+        (H G : A → Set ℓ₁)
+        (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
+        (F : B → Set ℓ₂)
+        (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
+        (_*ᵛ_ : B → A → A)
+                        : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+  field
+    H⊆G             : H ⊆ G
+    G-isVectorSpace : IsVectorSpace G _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
+    *ᵛ+ᵍ-close-H  : {c : B} {x y : A} → F c → H x → H y → H ((c *ᵛ x) +ᵍ y)
+    0ᵍ-close-H      : H 0ᵍ
+  open IsVectorSpace G-isVectorSpace
+
+  _*ᵛ-close-H_ : {c : B} {x : A} → F c → H x → H (c *ᵛ x)
+  _*ᵛ-close-H_ c∈F x∈H
+    = G-coerce H cx+0∈G cx∈G cx+0≈cx cx+0∈H
+      where cx+0∈H  = *ᵛ+ᵍ-close-H c∈F x∈H 0ᵍ-close-H
+            cx+0∈G  = H⊆G cx+0∈H
+            cx∈G    = c∈F *ᵛ-close (H⊆G x∈H)
+            cx+0≈cx = cx∈G 0ᵍ-identityʳ
+
+  _+ᵍ-close-H_ : Closed₂ _≈ᵍ_ H _+ᵍ_
+  _+ᵍ-close-H_ x∈H y∈H
+    = G-coerce H 1x+y∈G x+y∈G 1x+y≈x+y 1x+y∈H
+      where x∈G      = H⊆G x∈H
+            y∈G      = H⊆G y∈H
+            1x+y∈H   = *ᵛ+ᵍ-close-H 1ᶠ-close x∈H y∈H
+            1x+y∈G   = H⊆G 1x+y∈H
+            x+y∈G    = x∈G +ᵍ-close y∈G
+            1x+y≈x+y = +ᵍ-congˡ (1ᶠ-close *ᵛ-close x∈G) x∈G y∈G (1ᶠ-scalarIdentity x∈G)
+
+  H-isSubspaceOf'-G : (((H IsSubspaceOf' G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
+  H-isSubspaceOf'-G = record
+    { H⊆G             = H⊆G
+    ; G-isVectorSpace = G-isVectorSpace
+    ; _*ᵛ-close-H_    = _*ᵛ-close-H_
+    ; _+ᵍ-close-H_    = _+ᵍ-close-H_
+    ; 0ᵍ-close-H      = 0ᵍ-close-H
+    }
+
+  open IsVectorSpace G-isVectorSpace
+
+record VectorSpace : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+  field
+    G             : A → Set ℓ₁
+    _+ᵍ_          : A → A → A
+    0ᵍ            : A
+    -ᵍ            : A → A
+    F             : B → Set ℓ₂
+    _+ᶠ_          : B → B → B
+    _*ᶠ_          : B → B → B
+    0ᶠ            : B
+    1ᶠ            : B
+    -ᶠ            : B → B
+    _⁻¹ᶠ          : B → B
+    _*ᵛ_          : B → A → A
+    isVectorSpace : IsVectorSpace G _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
+
+  open IsVectorSpace isVectorSpace public
+
+  isSubspace : (H : A → Set ℓ₁) → Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+  isSubspace H = (((H IsSubspaceOf G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
+
+  isSubspace' : (H : A → Set ℓ₁) → Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+  isSubspace' H = (((H IsSubspaceOf' G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
+
+Theorem-1-3-⇒ : (W : VectorSpace)
+                → (V : A → Set ℓ₁)
+                → (VectorSpace.isSubspace W) V
+                → (VectorSpace.isSubspace' W) V
+Theorem-1-3-⇒ W V V-isSubspaceOf-W
+  = record
+    { H⊆G             = _IsSubspaceOf_.H⊆G V-isSubspaceOf-W
+    ; G-isVectorSpace = _IsSubspaceOf_.G-isVectorSpace V-isSubspaceOf-W
+    ; _*ᵛ-close-H_    = IsVectorSpace._*ᵛ-close_ (_IsSubspaceOf_.H-isVectorSpace V-isSubspaceOf-W)
+    ; _+ᵍ-close-H_    = IsVectorSpace._+ᵍ-close_ (_IsSubspaceOf_.H-isVectorSpace V-isSubspaceOf-W)
+    ; 0ᵍ-close-H      = IsVectorSpace.0ᵍ-close (_IsSubspaceOf_.H-isVectorSpace V-isSubspaceOf-W)
+    }
+
+Theorem-1-3-⇐ : (W : VectorSpace)
+                → (V : A → Set ℓ₁)
+                → (VectorSpace.isSubspace' W) V
+                → (VectorSpace.isSubspace W) V
+Theorem-1-3-⇐ W V V-isSubspaceOf'-W
+  = _IsSubspaceOf'_.H-isSubspaceOf-G V-isSubspaceOf'-W
+
+Theorem-1-3 : (W : VectorSpace)
+              → (V : A → Set ℓ₁)
+              → ( (VectorSpace.isSubspace W) V
+                ↔ (VectorSpace.isSubspace' W) V )
+Theorem-1-3 W V = (Theorem-1-3-⇒ W V , Theorem-1-3-⇐ W V)
+
+record SubspaceOf (W : VectorSpace)
+                      : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+  field
+    G                : A → Set ℓ₁
+    G-isSubspaceOf-W : (VectorSpace.isSubspace W) G
+  G-subspace : VectorSpace
+  G-subspace = record
+    { G             = G
+    ; _+ᵍ_          = VectorSpace._+ᵍ_ W
+    ; 0ᵍ            = VectorSpace.0ᵍ W
+    ; -ᵍ            = VectorSpace.-ᵍ W
+    ; F             = VectorSpace.F W
+    ; _+ᶠ_          = VectorSpace._+ᶠ_ W
+    ; _*ᶠ_          = VectorSpace._*ᶠ_ W
+    ; 0ᶠ            = VectorSpace.0ᶠ W
+    ; 1ᶠ            = VectorSpace.1ᶠ W
+    ; -ᶠ            = VectorSpace.-ᶠ W
+    ; _⁻¹ᶠ          = VectorSpace._⁻¹ᶠ W
+    ; _*ᵛ_          = VectorSpace._*ᵛ_ W
+    ; isVectorSpace = _IsSubspaceOf_.H-isVectorSpace G-isSubspaceOf-W
+    }
+
+-- _∩-isSubspace_ : {W : VectorSpace}
+--                 → {U V : A → Set ℓ₁}
+--                 → (VectorSpace.isSubspace W) U
+--                 → (VectorSpace.isSubspace W) V
+--                 → (VectorSpace.isSubspace W) (U ∩ V)
+-- U-isSubgroupOf-W ∩-isSubspace V-isSubgroupOf-W
+--   = ?
