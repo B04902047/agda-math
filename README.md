@@ -2,7 +2,7 @@
 
 An alternative construction of basic algebraic structures other than the Agda standard library
 
-## Motif
+## Motivation
 
 - Instead of parameterizing the structures on certain carriers by equivalence relations, as the Agda standard library does, in this repository are the structures parameterized by not and not only equivalence relations, but an equiality relation and also predicates on the carriers.
 
