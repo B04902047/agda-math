@@ -5,9 +5,7 @@ module Structure.Group
 open import Structure.Properties _≈_
 open import Structure.Monoid _≈_ public
 open import Structure.Subtype
-
 open import Structure.Logic
-open import Level using (_⊔_; suc)
 
 
 record IsGroup (G : A → Set) (_∙_ : A → A → A)

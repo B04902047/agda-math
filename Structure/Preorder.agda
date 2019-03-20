@@ -15,7 +15,6 @@ module Structure.Reasoning.Preorder
   (refl : Reflexive _≤_ S) (trans : Transitive _≤_ S)
   where
 
-open import Level using (_⊔_)
 open import Relation.Binary.PropositionalEquality as P using (_≡_)
 
 infix  4 _IsWeakerThan_

@@ -6,9 +6,7 @@ open import Structure.Subtype
 
 open import Structure.Properties _≈_
 open import Structure.Ring _≈_ public
-
 open import Structure.Logic
-open import Level using (_⊔_; suc)
 
 
 record IsDivisionRing

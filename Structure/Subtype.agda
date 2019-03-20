@@ -3,8 +3,6 @@ module Structure.Subtype {A : Set} where
 
 open import Structure.Logic
 
-open import Relation.Nullary using (¬_)
-
 _\[_] : (P : A → Set) → (Q : A → Set) → A → Set
 P \[ Q ] = λ x → ((P x) × (¬ (Q x)))
 

@@ -1,6 +1,6 @@
 
 module Structure.Logic where
---using (_×_; proj₁; proj₂; _,_; Σ)
+
 open import Data.Product public
 open import Relation.Nullary using (¬_) public
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) public

@@ -6,9 +6,7 @@ module Structure.Semigroup
 open import Structure.Subtype
 open import Structure.Properties _≈_
 open import Structure.Setoid _≈_ public
-
 open import Structure.Logic
-open import Level using (_⊔_; suc)
 
 
 record IsMagma (M : A → Set) (_∙_ : A → A → A)

@@ -8,7 +8,6 @@ open import Structure.Semigroup _≈_ public
 open import Structure.Subtype
 
 open import Structure.Logic
-open import Level using (_⊔_; suc)
 
 
 record IsMonoid (M : A → Set) (_∙_ : A → A → A) (ε : A)

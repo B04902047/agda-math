@@ -14,11 +14,7 @@ open import Structure.Properties
 import Structure.Group _≈ᵍ_ as ⟨A,≈ᵍ⟩
 import Structure.Field _≈ᶠ_ as ⟨B,≈ᶠ⟩
 open import Structure.Subtype
-
 open import Structure.Logic
-open import Level using (_⊔_; suc)
---open import Data.Nat using (zero; suc)
---open import Data.Fin renaming (zero to #0; suc to _+1)
 
 
 record IsVectorSpace

@@ -8,7 +8,6 @@ open import Structure.Morphism
 open import Structure.Subtype
 open import Data.Nat
 open import Structure.Logic
-open import Level using (_⊔_)
 
 -- data ℕ : Set where
 --   0# : ℕ

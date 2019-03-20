@@ -4,9 +4,7 @@ module Structure.Properties
                 (_≈_ : A → A → Set)
                 (S : A → Set) where
 
-open import Level using (_⊔_)
-open import Data.Product using (_×_)
-open import Data.Sum using (_⊎_)
+open import Structure.Logic
 
 ------------------------------------------------------------------------
 -- Binary Relation Properties

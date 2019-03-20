@@ -4,7 +4,6 @@ module Structure.CompleteOrderedField {A : Set} (_≈_ : A → A → Set) where
 open import Structure.OrderedField _≈_
 open import Structure.Properties _≈_
 open import Structure.Subtype
-
 open import Structure.Logic
 
 record IsCompleteOrderedField

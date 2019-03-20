@@ -3,7 +3,6 @@ module Structure.Setoid {A : Set} (_≈_ : A → A → Set) where
 
 open import Structure.Properties
 open import Structure.Subtype
-
 open import Structure.Logic
 
 record IsSet (S : A → Set) : Set₁ where

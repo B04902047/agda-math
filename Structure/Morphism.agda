@@ -5,9 +5,8 @@ module Structure.Morphism
         (_≈₂_ : B → B → Set) where
 
 open import Structure.Setoid
+open import Structure.Logic
 open import Data.Product
-open import Relation.Nullary using (¬_)
-open import Level using (_⊔_)
 
 Injective : (f : A → B) → (S₁ : A → Set) → (S₂ : B → Set)
             → (IsSet _≈₁_ S₁) → (IsSet _≈₂_ S₂)

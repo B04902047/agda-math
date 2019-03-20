@@ -3,9 +3,8 @@ module Structure.Ring {A : Set} (_≈_ : A → A → Set) where
 
 open import Structure.Properties _≈_
 open import Structure.Group _≈_ public
-
 open import Structure.Logic
-open import Level using (_⊔_; suc)
+
 
 record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
           (0# 1# : A) (-_ : A → A) : Set₁ where

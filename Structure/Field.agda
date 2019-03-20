@@ -4,7 +4,6 @@ module Structure.Field {A : Set} (_≈_ : A → A → Set) where
 open import Structure.Properties _≈_
 open import Structure.DivisionRing _≈_
 open import Structure.Subtype
-
 open import Structure.Logic
 
 
