@@ -1,7 +1,10 @@
 # algebraic-structures
+
 An alternative construction of basic algebraic structures other than the Agda standard library
 
-- Instead of parameterizing the structures on certain carriers by equivalence relations, as the Agda standard library does, in this repository are the structures parameterized by not only equivalence relations, but also predicates on the carriers.
+## Motif
+
+- Instead of parameterizing the structures on certain carriers by equivalence relations, as the Agda standard library does, in this repository are the structures parameterized by not and not only equivalence relations, but an equiality relation and also predicates on the carriers.
 
 - The motivation came when I tried to define Field using the standard library.
   - When defining Field, it is unavoidable to deal with substructures.
@@ -16,3 +19,23 @@ An alternative construction of basic algebraic structures other than the Agda st
 - Basic reasoning for preorder and equivalence on such definition for structures are also provided.
 
 - This repository uses the Agda standard library, and should be put under the same path as it is.
+
+## Content
+- Basic
+  - Subtype : basic operations for predicates
+  - Reasoning : alternative reasoning tools under a predicate
+  - Equality : an euivalence relation with congurence and substitution
+  - Setoid (Set) : a type equipped with a predicate and an equality relation
+  - OrderedSet : a Set equipped with a total order
+- Algebra
+  - Semigroup, Monoid, Group : Sets equipped with a binary operation
+  - Ring, DivisionRing, Field : Sets equipped with two binary operations
+  - VectorSpace : an AbelianGroup with an Field acting on it
+- Analysis
+  - OrderedField : a Field equipped with a total order
+  - CompleteOrderedField : the Real number
+- Others
+  - Logic : where basic logical tools are defined or import publicly
+  - Properties : basic properties when defining algebraic structures
+  - Number : the construction of the number system
+  - Morphism : basic properties of structures
