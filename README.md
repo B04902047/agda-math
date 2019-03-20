@@ -38,4 +38,4 @@ An alternative construction of basic algebraic structures other than the Agda st
   - Logic : where basic logical tools are defined or import publicly
   - Properties : basic properties when defining algebraic structures
   - Number : the construction of the number system
-  - Morphism : basic properties of structures
+  - Morphism : basic properties of functions
