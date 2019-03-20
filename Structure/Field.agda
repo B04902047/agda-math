@@ -1,19 +1,16 @@
 
-module Structure.Field
-        {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) where
+module Structure.Field {A : Set} (_≈_ : A → A → Set) where
 
 open import Structure.Properties _≈_
 open import Structure.DivisionRing _≈_
 open import Structure.Subtype
 
 open import Structure.Logic
-open import Level using (_⊔_; suc)
 
 
-record IsField (F : A → Set ℓ)
-          (_+_ _*_ : A → A → A) (0# 1# : A)
-          (- _⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+record IsField
+      (F : A → Set) (_+_ _*_ : A → A → A)
+      (0# 1# : A) (- _⁻¹ : A → A) : Set₁ where
   field
     isDivisionRing : IsDivisionRing F _+_ _*_ 0# 1# - _⁻¹
     *-comm         : Commutative F _*_
@@ -61,13 +58,17 @@ record IsField (F : A → Set ℓ)
     ; noNonzeroZeroDivisors = noNonzeroZeroDivisors
     }
 
+  postulate
+    ix : {x : A} → F x → ¬ (x ≈ 0#) → ¬ ((x ⁻¹) ≈ 0#)
+    x : {x y : A} → F x → F y → ((x * y) ⁻¹) ≈ ((y ⁻¹) * (x ⁻¹))
+
   _*-close\[0]_ : Closed₂ (F \[ _≈ 0# ]) _*_
   (x∈F , x!≈0) *-close\[0] (y∈F , y!≈0)
     = (x∈F *-close y∈F , noNonzeroZeroDivisors x∈F y∈F x!≈0 y!≈0)
 
   *-isMagma\[0] : IsMagma (F \[ _≈ 0# ]) _*_
   *-isMagma\[0] = record
-    { isSetoid  = isSetoid\[0]
+    { isSet     = isSet\[0]
     ; _∙-close_ = _*-close\[0]_
     }
 

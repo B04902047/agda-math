@@ -5,10 +5,9 @@
 -- ₐ ₑ ₕ ᵢ ⱼ ₖ ₗ ₘ ₙ ₒ ₚ ᵣ ₛ ₜ ᵤ ᵥ ₓ
 -- ᵅ ᵝ ᵞ ᵟ ᵋ ᶿ ᶥ ᶲ ᵠ ᵡ ᵦ ᵧ ᵨ ᵩ ᵪ
 
-module Structure.VectorSpace {a b ℓ₁ ℓ₂}
-        {A : Set a} {B : Set b}
-        (_≈ᵍ_ : A → A → Set ℓ₁)
-        (_≈ᶠ_ : B → B → Set ℓ₂)
+module Structure.VectorSpace
+        {A : Set} (_≈ᵍ_ : A → A → Set)
+        {B : Set} (_≈ᶠ_ : B → B → Set)
         where
 
 open import Structure.Properties
@@ -18,23 +17,23 @@ open import Structure.Subtype
 
 open import Structure.Logic
 open import Level using (_⊔_; suc)
+--open import Data.Nat using (zero; suc)
+--open import Data.Fin renaming (zero to #0; suc to _+1)
 
 
 record IsVectorSpace
-        (G : A → Set ℓ₁)
+        (G : A → Set)
         (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
-        (F : B → Set ℓ₂)
+        (F : B → Set)
         (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
-        (_*ᵛ_ : B → A → A)
-                                : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+        (_*ᵛ_ : B → A → A) : Set₁ where
   field
     G-isAbelianGroup  : ⟨A,≈ᵍ⟩.IsAbelianGroup G _+ᵍ_ 0ᵍ -ᵍ
     F-isField         : ⟨B,≈ᶠ⟩.IsField F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ
     _*ᵛ-close_        : {c : B} {x : A} → F c → G x → G (c *ᵛ x)
     *ᵛ-congˡ          : {c d : B} {x : A} → F c → F d → G x
                         → c ≈ᶠ d → (c *ᵛ x) ≈ᵍ (d *ᵛ x)
-    *ᵛ-congʳ          : {x y : A} {c : B} → G x → G y → F c
-                        → x ≈ᵍ y → (c *ᵛ x) ≈ᵍ (c *ᵛ y)
+
     1ᶠ-scalarIdentity : {x : A} → G x → (1ᶠ *ᵛ x) ≈ᵍ x
     *-assoc           : {c d : B} {x : A} → F c → F d → G x
                         → ((c *ᶠ d) *ᵛ x) ≈ᵍ (c *ᵛ (d *ᵛ x))
@@ -73,7 +72,8 @@ record IsVectorSpace
     ;         _∙-close_   to _+ᵍ-close_
     ;         ∙-congˡ     to +ᵍ-congˡ
     ;         ∙-congʳ     to +ᵍ-congʳ
-    ;         isSetoid    to G-isSetoid
+    ;         ∙-sum       to +ᵍ-sum
+    ;         isSet       to G-isSet
     ;           refl      to G-refl
     ;           sym       to G-sym
     ;           trans     to G-trans
@@ -114,6 +114,7 @@ record IsVectorSpace
     ;               _+-close_   to _+ᶠ-close_
     ;               +-congˡ     to +ᶠ-congˡ
     ;               +-congʳ     to +ᶠ-congʳ
+    ;               +-sum       to +ᶠ-sum
     ;       +-isCommutativeMonoid to +ᶠ-isCommutativeMonoid
     ;       _⁻¹-close\[0]   to _⁻¹ᶠ-close\[0]
     ;       ⁻¹-cong\[0]     to ⁻¹ᶠ-cong\[0]
@@ -139,7 +140,8 @@ record IsVectorSpace
     ;           _*-close_   to _*ᶠ-close_
     ;           *-congˡ     to *ᶠ-congˡ
     ;           *-congʳ     to *ᶠ-congʳ
-    ;           isSetoid    to F-isSetoid
+    ;           *-sum       to *ᶠ-sum
+    ;           isSet       to F-isSet
     ;             refl      to F-refl
     ;             sym       to F-sym
     ;             trans     to F-trans
@@ -151,11 +153,12 @@ record IsVectorSpace
     ;   0-zeroˡ           to 0ᶠ-zeroˡ
     ;   _0-zeroʳ          to _0ᶠ-zeroʳ
     ;   negativeUnit      to F-negativeUnit
+    ;   -‿assoc           to -ᶠ‿assoc
     ; *-comm              to *ᶠ-comm
     ; 1!≈0                 to 1ᶠ!≈ᶠ0ᶠ
     ;   noNonzeroZeroDivisors to F-noNonzeroZeroDivisors
     ;   isIntegralDomain      to F-isIntegralDomain
-    ;   isSetoid\[0]          to F\[0]-isSetoid
+    ;   isSet\[0]             to F\[0]-isSet
     ;   _*-close\[0]_         to _*ᶠ-close\[0]_
     ;   *-congˡ\[0]           to *ᶠ-congˡ\[0]
     ;   *-congʳ\[0]           to *ᶠ-congʳ\[0]
@@ -178,6 +181,10 @@ record IsVectorSpace
     ; _≡˘⟨_⟩_
     ; _≡⟨⟩_; _∎⟨_⟩
     )
+
+  *ᵛ-congʳ : {x y : A} {c : B} → G x → G y → F c
+             → x ≈ᵍ y → (c *ᵛ x) ≈ᵍ (c *ᵛ y)
+  *ᵛ-congʳ {x} {y} {c} x∈G y∈G c∈F x≈y = G-ap (c *ᵛ_) x∈G y∈G x≈y
 
   0ᶠ-scalarZero : {x : A} → G x → (0ᶠ *ᵛ x) ≈ᵍ 0ᵍ
   0ᶠ-scalarZero {x} x∈G
@@ -222,24 +229,23 @@ record IsVectorSpace
                     ∎⟨ 0ᵍ-close ⟩
 
 record _IsSubspaceOf_
-        (H G : A → Set ℓ₁)
+        (H G : A → Set)
         (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
-        (F : B → Set ℓ₂)
+        (F : B → Set)
         (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
-        (_*ᵛ_ : B → A → A)
-                        : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+        (_*ᵛ_ : B → A → A) : Set₁ where
   field
     H⊆G             : H ⊆ G
     G-isVectorSpace : IsVectorSpace G _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
     H-isVectorSpace : IsVectorSpace H _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
 
 record _IsSubspaceOf'_
-        (H G : A → Set ℓ₁)
+        (H G : A → Set)
         (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
-        (F : B → Set ℓ₂)
+        (F : B → Set)
         (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
         (_*ᵛ_ : B → A → A)
-                        : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+                : Set₁ where
   field
     H⊆G             : H ⊆ G
     G-isVectorSpace : IsVectorSpace G _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
@@ -307,7 +313,6 @@ record _IsSubspaceOf'_
     ; F-isField         = F-isField
     ; _*ᵛ-close_        = _*ᵛ-close-H_
     ; *ᵛ-congˡ          = *ᵛ-congˡ-H
-    ; *ᵛ-congʳ          = *ᵛ-congʳ-H
     ; 1ᶠ-scalarIdentity = 1ᶠ-scalarIdentity-H
     ; *-assoc           = *-assoc-H
     ; distribˡ          = H-distribˡ
@@ -321,12 +326,11 @@ record _IsSubspaceOf'_
     }
 
 record _IsSubspaceOf''_
-        (H G : A → Set ℓ₁)
+        (H G : A → Set)
         (_+ᵍ_ : A → A → A) (0ᵍ : A) (-ᵍ : A → A)
-        (F : B → Set ℓ₂)
+        (F : B → Set)
         (_+ᶠ_ _*ᶠ_ : B → B → B) (0ᶠ 1ᶠ : B) (-ᶠ _⁻¹ᶠ : B → B)
-        (_*ᵛ_ : B → A → A)
-                        : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+        (_*ᵛ_ : B → A → A) : Set₁ where
   field
     H⊆G             : H ⊆ G
     G-isVectorSpace : IsVectorSpace G _+ᵍ_ 0ᵍ -ᵍ F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ _⁻¹ᶠ _*ᵛ_
@@ -363,13 +367,13 @@ record _IsSubspaceOf''_
 
   open IsVectorSpace G-isVectorSpace
 
-record VectorSpace : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+record VectorSpace : Set₁ where
   field
-    G             : A → Set ℓ₁
+    G             : A → Set
     _+ᵍ_          : A → A → A
     0ᵍ            : A
     -ᵍ            : A → A
-    F             : B → Set ℓ₂
+    F             : B → Set
     _+ᶠ_          : B → B → B
     _*ᶠ_          : B → B → B
     0ᶠ            : B
@@ -381,14 +385,26 @@ record VectorSpace : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
 
   open IsVectorSpace isVectorSpace public
 
-  isSubspace : (H : A → Set ℓ₁) → Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+  isSubspace : (H : A → Set) → Set₁
   isSubspace H = (((H IsSubspaceOf G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
 
-  isSubspace' : (H : A → Set ℓ₁) → Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂)
+  isSubspace' : (H : A → Set) → Set₁
   isSubspace' H = (((H IsSubspaceOf' G) _+ᵍ_ 0ᵍ -ᵍ) F _+ᶠ_ _*ᶠ_ 0ᶠ 1ᶠ -ᶠ) _⁻¹ᶠ _*ᵛ_
 
+  --linearCombination : {n : ℕ} → (c : Fin n → B) → (x : Fin n → A) → ℕ → A
+  --linearCombination c x (k +1) = (linearCombination c x k) +ᵍ ((c (k +1)) (x *ᵛ (k +1)))
+
+  -- span : {S : A → Set ℓ₁} → (S ⊆ G) → A → Set ℓ₁
+  -- span S⊆G = Σ[ n ∈ ℕ ] (
+  --             Σ[ c ∈ Fin n → (Σ[ cᵢ ∈ B ] (F cᵢ)) ] (
+  --               Σ[ x ∈ Fin n → (Σ[ xᵢ ∈ A ] (G xᵢ)) ] (
+  --
+  --               )
+  --             )
+  --           )
+
 Theorem-1-3-⇒ : (W : VectorSpace)
-                → (V : A → Set ℓ₁)
+                → (V : A → Set)
                 → (VectorSpace.isSubspace W) V
                 → (VectorSpace.isSubspace' W) V
 Theorem-1-3-⇒ W V V-isSubspaceOf-W
@@ -401,22 +417,22 @@ Theorem-1-3-⇒ W V V-isSubspaceOf-W
     }
 
 Theorem-1-3-⇐ : (W : VectorSpace)
-                → (V : A → Set ℓ₁)
+                → (V : A → Set)
                 → (VectorSpace.isSubspace' W) V
                 → (VectorSpace.isSubspace W) V
 Theorem-1-3-⇐ W V V-isSubspaceOf'-W
   = _IsSubspaceOf'_.H-isSubspaceOf-G V-isSubspaceOf'-W
 
 Theorem-1-3 : (W : VectorSpace)
-              → (V : A → Set ℓ₁)
+              → (V : A → Set)
               → ( (VectorSpace.isSubspace W) V
                 ↔ (VectorSpace.isSubspace' W) V )
 Theorem-1-3 W V = (Theorem-1-3-⇒ W V , Theorem-1-3-⇐ W V)
 
 record SubspaceOf (W : VectorSpace)
-                      : Set (a ⊔ b ⊔ suc ℓ₁ ⊔ suc ℓ₂) where
+                      : Set₁ where
   field
-    G                : A → Set ℓ₁
+    G                : A → Set
     G-isSubspaceOf-W : (VectorSpace.isSubspace W) G
   G-subspace : VectorSpace
   G-subspace = record
@@ -435,10 +451,25 @@ record SubspaceOf (W : VectorSpace)
     ; isVectorSpace = _IsSubspaceOf_.H-isVectorSpace G-isSubspaceOf-W
     }
 
--- _∩-isSubspace_ : {W : VectorSpace}
+_∩-isSubspace'_ : {W : VectorSpace}
+                → {U V : A → Set}
+                → (VectorSpace.isSubspace' W) U
+                → (VectorSpace.isSubspace' W) V
+                → (VectorSpace.isSubspace' W) (U ∩ V)
+_∩-isSubspace'_ {W} {U} {V} U-isSubspaceOf'-W V-isSubspaceOf'-W
+  = record
+    { H⊆G             = λ x∈U∩V → U⊆W (proj₁ x∈U∩V)
+    ; G-isVectorSpace = VectorSpace.isVectorSpace W
+    ; _*ᵛ-close-H_    = λ c∈F x∈U∩V → (((_IsSubspaceOf'_._*ᵛ-close-H_ U-isSubspaceOf'-W) c∈F (proj₁ x∈U∩V) , (_IsSubspaceOf'_._*ᵛ-close-H_ V-isSubspaceOf'-W) c∈F (proj₂ x∈U∩V) ))
+    ; _+ᵍ-close-H_    = λ x∈U∩V y∈U∩V → (((_IsSubspaceOf'_._+ᵍ-close-H_ U-isSubspaceOf'-W) (proj₁ x∈U∩V) (proj₁ y∈U∩V) , (_IsSubspaceOf'_._+ᵍ-close-H_ V-isSubspaceOf'-W) (proj₂ x∈U∩V) (proj₂ y∈U∩V) ))
+    ; 0ᵍ-close-H      = (_IsSubspaceOf'_.0ᵍ-close-H U-isSubspaceOf'-W , _IsSubspaceOf'_.0ᵍ-close-H V-isSubspaceOf'-W)
+    } where U⊆W = _IsSubspaceOf'_.H⊆G U-isSubspaceOf'-W
+            V⊆W = _IsSubspaceOf'_.H⊆G V-isSubspaceOf'-W
+
+
+-- _sum-isSubspace'_ : {W : VectorSpace}
 --                 → {U V : A → Set ℓ₁}
---                 → (VectorSpace.isSubspace W) U
---                 → (VectorSpace.isSubspace W) V
---                 → (VectorSpace.isSubspace W) (U ∩ V)
--- U-isSubgroupOf-W ∩-isSubspace V-isSubgroupOf-W
---   = ?
+--                 → (VectorSpace.isSubspace' W) U
+--                 → (VectorSpace.isSubspace' W) V
+--                 → (VectorSpace.isSubspace' W) ((VectorSpace.+ᵍ-sum W) U V)
+-- _sum-isSubspace'_ = ?

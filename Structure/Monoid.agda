@@ -1,6 +1,7 @@
 
-module Structure.Monoid {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) where
+module Structure.Monoid
+        {A : Set}
+        (_≈_ : A → A → Set) where
 
 open import Structure.Properties _≈_
 open import Structure.Semigroup _≈_ public
@@ -10,8 +11,8 @@ open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 
-record IsMonoid (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
-                                        : Set (a ⊔ suc ℓ) where
+record IsMonoid (M : A → Set) (_∙_ : A → A → A) (ε : A)
+                                  : Set₁ where
   field
     isSemigroup : IsSemigroup M _∙_
     ε-close     : Closed₀ M ε
@@ -43,8 +44,7 @@ record IsMonoid (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
                         ∎⟨ ε-close ⟩
 
 record IsCommutativeMonoid
-          (M : A → Set ℓ) (_∙_ : A → A → A) (ε : A)
-                                      : Set (a ⊔ suc ℓ) where
+          (M : A → Set) (_∙_ : A → A → A) (ε : A) : Set₁ where
   field
     isSemigroup : IsSemigroup M _∙_
     ε-close     : Closed₀ M ε
@@ -53,22 +53,28 @@ record IsCommutativeMonoid
 
   open IsSemigroup isSemigroup public
 
-  -- postulate
-  --   identityʳ : RightIdentity _∙_ ε
-  --
-  -- identity : Identity _∙_ ε
-  -- identity = (identityˡ , identityʳ)
-  --
-  -- isMonoid : IsMonoid _∙_ ε
-  -- isMonoid = record {
-  --     isSemigroup = isSemigroup
-  --   ; ε-close     = ε-close
-  --   ; identity    = identity
-  --   }
+  ε-identityʳ : RightIdentity M _∙_ ε
+  ε-identityʳ {x} x∈M = begin
+                        x ∙ ε
+                      ≈⟨ x∈M ∙-close ε-close , ∙-comm x∈M ε-close ⟩
+                        ε ∙ x
+                      ≈⟨ ε-close ∙-close x∈M ,  ε-identityˡ x∈M ⟩
+                        x
+                      ∎⟨ x∈M ⟩
+
+  ε-identity : Identity M _∙_ ε
+  ε-identity = (ε-identityˡ , ε-identityʳ)
+
+  isMonoid : IsMonoid M _∙_ ε
+  isMonoid = record {
+      isSemigroup = isSemigroup
+    ; ε-close     = ε-close
+    ; ε-identity    = ε-identity
+    }
 
 record IsIdempotentCommutativeMonoid
-          (M : A → Set ℓ) (∙ : A → A → A) (ε : A)
-                                      : Set (a ⊔ suc ℓ) where
+              (M : A → Set) (∙ : A → A → A) (ε : A)
+                                : Set₁ where
   field
     isCommutativeMonoid : IsCommutativeMonoid M ∙ ε
     idem                : Idempotent M ∙
@@ -77,16 +83,18 @@ record IsIdempotentCommutativeMonoid
 
 
 record _IsSubmonoidOf_
-        (N : A → Set ℓ) (M : A → Set ℓ)
-        (_∙_ : A → A → A) (ε : A) : Set (a ⊔ suc ℓ) where
+        (N M : A → Set)
+        (_∙_ : A → A → A) (ε : A)
+                            : Set₁ where
   field
     N⊆M        : N ⊆ M
     M-isMonoid : IsMonoid M _∙_ ε
     N-isMonoid : IsMonoid N _∙_ ε
 
 record _IsSubmonoidOf'_
-        (N : A → Set ℓ) (M : A → Set ℓ)
-        (_∙_ : A → A → A) (ε : A) : Set (a ⊔ suc ℓ) where
+        (N M : A → Set)
+        (_∙_ : A → A → A) (ε : A)
+                            : Set₁ where
   field
     N⊆M         : N ⊆ M
     M-isMonoid  : IsMonoid M _∙_ ε

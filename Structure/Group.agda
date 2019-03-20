@@ -1,7 +1,6 @@
 
 module Structure.Group
-        {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ)  where
+        {A : Set} (_≈_ : A → A → Set) where
 
 open import Structure.Properties _≈_
 open import Structure.Monoid _≈_ public
@@ -11,8 +10,8 @@ open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 
-record IsGroup (G : A → Set ℓ) (_∙_ : A → A → A)
-                (ε : A) (_⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+record IsGroup (G : A → Set) (_∙_ : A → A → A)
+                (ε : A) (_⁻¹ : A → A) : Set₁ where
   field
     isMonoid    : IsMonoid G _∙_ ε
     _⁻¹-close   : Closed₁ G _⁻¹
@@ -109,6 +108,9 @@ record IsGroup (G : A → Set ℓ) (_∙_ : A → A → A)
       where ε∈G = ε-close
             x⁻¹∈G = x∈G ⁻¹-close
 
+  ⁻¹-doubleInverse : {x : A} → G x → ((x ⁻¹) ⁻¹) ≈ x
+  ⁻¹-doubleInverse x∈F = sym x∈F ((x∈F ⁻¹-close) ⁻¹-close) (⁻¹-uniqueˡ x∈F (x∈F ⁻¹-close) (x∈F ⁻¹-inverseʳ))
+
   _/_ : A → A → A
   x / y = x ∙ (y ⁻¹)
 
@@ -131,17 +133,15 @@ record IsGroup (G : A → Set ℓ) (_∙_ : A → A → A)
         z / y
       ∎⟨ z∈G /-close y∈G ⟩
 
-record _IsSubgroupOf_
-          (H : A → Set ℓ) (G : A → Set ℓ)
-          (∙ : A → A → A) (ε : A) (⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+record _IsSubgroupOf_ (H G : A → Set) (∙ : A → A → A)
+                      (ε : A) (⁻¹ : A → A) : Set₁ where
   field
     H⊆G       : H ⊆ G
     G-isGroup : IsGroup G ∙ ε ⁻¹
     H-isGroup : IsGroup H ∙ ε ⁻¹
 
-record _IsSubgroupOf'_
-          (H : A → Set ℓ) (G : A → Set ℓ)
-          (_∙_ : A → A → A) (ε : A) (_⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+record _IsSubgroupOf'_ (H G : A → Set) (_∙_ : A → A → A)
+                       (ε : A) (_⁻¹ : A → A) : Set₁ where
   field
     H⊆G         : H ⊆ G
     G-isGroup   : IsGroup G _∙_ ε _⁻¹
@@ -172,8 +172,8 @@ record _IsSubgroupOf'_
     ; _⁻¹-inverse = _⁻¹-inverse-H
     }
 
-record IsAbelianGroup (G : A → Set ℓ) (∙ : A → A → A)
-                      (ε : A) (⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+record IsAbelianGroup (G : A → Set) (∙ : A → A → A)
+                      (ε : A) (⁻¹ : A → A) : Set₁ where
   field
     isGroup : IsGroup G ∙ ε ⁻¹
     ∙-comm    : Commutative G ∙

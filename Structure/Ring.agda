@@ -1,7 +1,5 @@
 
-module Structure.Ring
-        {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) where
+module Structure.Ring {A : Set} (_≈_ : A → A → Set) where
 
 open import Structure.Properties _≈_
 open import Structure.Group _≈_ public
@@ -9,9 +7,8 @@ open import Structure.Group _≈_ public
 open import Structure.Logic
 open import Level using (_⊔_; suc)
 
-record IsRing (R : A → Set ℓ)
-              (_+_ _*_ : A → A → A)
-              (0# 1# : A) (-_ : A → A) : Set (a ⊔ suc ℓ) where
+record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
+          (0# 1# : A) (-_ : A → A) : Set₁ where
   field
     +-isAbelianGroup : IsAbelianGroup R _+_ 0# -_
     *-isMonoid       : IsMonoid R _*_ 1#
@@ -34,6 +31,7 @@ record IsRing (R : A → Set ℓ)
     ;   ⁻¹-cong           to -‿cong
     ;     ⁻¹-uniqueˡ      to -‿uniqueˡ
     ;     ⁻¹-uniqueʳ      to -‿uniqueʳ
+    ;     ⁻¹-doubleInverse to -‿doubleInverse
     ;     ∙-cancelˡ       to +-cancelˡ
     ;     ∙-cancelʳ       to +-cancelʳ
     ;     _/_             to _-_
@@ -53,6 +51,7 @@ record IsRing (R : A → Set ℓ)
     ;         _∙-close_   to _+-close_
     ;         ∙-congˡ     to +-congˡ
     ;         ∙-congʳ     to +-congʳ
+    ;         ∙-sum       to +-sum
     ; isCommutativeMonoid to +-isCommutativeMonoid
     )
 
@@ -71,6 +70,7 @@ record IsRing (R : A → Set ℓ)
     ;     _∙-close_   to _*-close_
     ;     ∙-congˡ     to *-congˡ
     ;     ∙-congʳ     to *-congʳ
+    ;     ∙-sum       to *-sum
     )
 
   0-zeroˡ : LeftZero R _*_ 0#
@@ -145,10 +145,31 @@ record IsRing (R : A → Set ℓ)
 
   -- postulate
   --   zeroRing : (1# ≈ 0#) → (a : A) → (¬ (¬ (a ≈ 1#)))
-
-record IsCommutativeRing (R : A → Set ℓ)
-          (+ * : A → A → A)
-          (0# 1# : A) (- : A → A) : Set (a ⊔ suc ℓ) where
+  -‿assoc : {x y : A} → R x → R y → ((- x) * y) ≈ (- (x * y))
+  -‿assoc {x} {y} x∈R y∈R = begin
+                            (- x) * y
+                          ≈˘⟨ (-‿close x∈R) *-close y∈R , *-congˡ ((-‿close 1-close) *-close x∈R) (-‿close x∈R) y∈R (negativeUnit x∈R) ⟩
+                            ((- 1#) * x) * y
+                          ≈⟨ ((-‿close 1-close) *-close x∈R) *-close y∈R , *-assoc (-‿close 1-close) x∈R y∈R ⟩
+                            ((- 1#) * (x * y))
+                          ≈⟨ (-‿close 1-close) *-close (x∈R *-close y∈R) , negativeUnit (x∈R *-close y∈R) ⟩
+                            - (x * y)
+                          ∎⟨ -‿close (x∈R *-close y∈R) ⟩
+  -‿distrib : {x y : A} → R x → R y → (- (x + y)) ≈ ((- x) + (- y))
+  -‿distrib {x} {y} x∈R y∈R = begin
+                              - (x + y)
+                            ≈˘⟨ -‿close (x∈R +-close y∈R) , negativeUnit (x∈R +-close y∈R) ⟩
+                              (- 1#) * (x + y)
+                            ≈⟨ (-‿close 1-close) *-close (x∈R +-close y∈R) , distribˡ (-‿close 1-close) x∈R y∈R ⟩
+                              ((- 1#) * x) + ((- 1#) * y)
+                            ≈⟨ ((-‿close 1-close) *-close x∈R) +-close ((-‿close 1-close) *-close y∈R) , +-congˡ ((-‿close 1-close) *-close x∈R) (-‿close x∈R) ((-‿close 1-close) *-close y∈R) (negativeUnit x∈R) ⟩
+                              (- x) + ((- 1#) * y)
+                            ≈⟨ (-‿close x∈R) +-close ((-‿close 1-close) *-close y∈R) , +-congʳ ((-‿close 1-close) *-close y∈R) (-‿close y∈R) (-‿close x∈R) (negativeUnit y∈R) ⟩
+                              (- x) + (- y)
+                            ∎⟨ (-‿close x∈R) +-close (-‿close y∈R) ⟩
+  -- negativeUnit
+record IsCommutativeRing (R : A → Set) (+ * : A → A → A)
+                         (0# 1# : A) (- : A → A) : Set₁ where
   field
     isRing : IsRing R + * 0# 1# -
     *-comm : Commutative R *
@@ -163,9 +184,8 @@ record IsCommutativeRing (R : A → Set ℓ)
     ; ∙-comm        = *-comm
     }
 
-record IsIntegralDomain (R : A → Set ℓ)
-          (_+_ _*_ : A → A → A)
-          (0# 1# : A) (- : A → A) : Set (a ⊔ suc ℓ) where
+record IsIntegralDomain (R : A → Set) (_+_ _*_ : A → A → A)
+                        (0# 1# : A) (- : A → A) : Set₁ where
   field
     isRing : IsRing R _+_ _*_ 0# 1# -
     noNonzeroZeroDivisors : {x y : A} → R x → R y

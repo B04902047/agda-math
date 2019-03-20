@@ -1,31 +1,27 @@
 
-module Structure.Setoid
-        {a ℓ} {A : Set a} (_≈_ : A → A → Set ℓ) where
+module Structure.Setoid {A : Set} (_≈_ : A → A → Set) where
 
 open import Structure.Properties
 open import Structure.Subtype
 
 open import Structure.Logic
-open import Level using (_⊔_; suc)
 
-record IsSetoid
-         (S : A → Set ℓ) : Set (a ⊔ suc ℓ) where
+record IsSet (S : A → Set) : Set₁ where
   field
     refl   : Reflexive _≈_ S
     sym    : Symmetric _≈_ S
     trans  : Transitive _≈_ S
-    coerce : {x y : A} (P : A → Set ℓ) → S x → S y
+    coerce : {x y : A} (P : A → Set) → S x → S y
             → x ≈ y → P x → P y
     ap     : {x y : A} (f : A → A) → S x → S y
             → x ≈ y → (f x) ≈ (f y)
   open import Structure.Reasoning.Equivalence _≈_ S refl sym trans public
 
-record _IsSubsetoidOf_
-        (T : A → Set ℓ) (S : A → Set ℓ) : Set (a ⊔ suc ℓ) where
+record _IsSubsetOf_ (T S : A → Set) : Set₁ where
   field
     T⊆S     : T ⊆ S
-    S-isSetoid : IsSetoid S
-  open IsSetoid S-isSetoid
+    S-isSet : IsSet S
+  open IsSet S-isSet
     renaming
     ( refl   to S-refl
     ; sym    to S-sym
@@ -41,36 +37,16 @@ record _IsSubsetoidOf_
   T-trans : Transitive _≈_ T
   T-trans x∈T y∈T z∈T = S-trans (T⊆S x∈T) (T⊆S y∈T) (T⊆S z∈T)
 
-  T-coerce : {x y : A} (P : A → Set ℓ) → T x → T y → x ≈ y → P x → P y
+  T-coerce : {x y : A} (P : A → Set) → T x → T y → x ≈ y → P x → P y
   T-coerce P x∈T y∈T = S-coerce P (T⊆S x∈T) (T⊆S y∈T)
   T-ap : {x y : A} (f : A → A) → T x → T y → x ≈ y → (f x) ≈ (f y)
   T-ap f x∈T y∈T = S-ap f (T⊆S x∈T) (T⊆S y∈T)
 
-  T-isSetoid : IsSetoid T
-  T-isSetoid = record
+  T-isSet : IsSet T
+  T-isSet = record
     { refl   = T-refl
     ; sym    = T-sym
     ; trans  = T-trans
     ; coerce = T-coerce
     ; ap     = T-ap
     }
-
--- record Setoid : Set (a ⊔ Level.suc ℓ) where
---   field
---     carrier : A → Set ℓ
---     _≈_ : A → A → Set ℓ
---     isEquivalence : IsEquivalence _≈_ carrier
-
--- data _≡_ : A → A → Set (a ⊔ ℓ) where
---   refl  : {x : A} → x ≡ x
---   sym   : {x y : A} → x ≡ y → y ≡ x
---   trans : {x y z : A} → x ≡ y → y ≡ z → x ≡ z
---
--- ≡-isEquivalence : (S : A → Set ℓ) → IsEquivalence _≡_ S
--- ≡-isEquivalence = ?
--- -- record
--- --   {
--- --     refl = ?
--- --   ; sym = ?
--- --   ; trans = ?
--- --   }

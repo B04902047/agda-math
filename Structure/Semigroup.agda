@@ -1,7 +1,7 @@
 
 module Structure.Semigroup
-        {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ) where
+        {A : Set}
+        (_≈_ : A → A → Set) where
 
 open import Structure.Subtype
 open import Structure.Properties _≈_
@@ -11,13 +11,13 @@ open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 
-record IsMagma (M : A → Set ℓ) (_∙_ : A → A → A)
-                                        : Set (a ⊔ suc ℓ) where
+record IsMagma (M : A → Set) (_∙_ : A → A → A)
+                        : Set₁ where
   field
-    isSetoid  : IsSetoid M
+    isSet     : IsSet M
     _∙-close_ : Closed₂ M _∙_
 
-  open IsSetoid isSetoid public
+  open IsSet isSet public
 
   ∙-congˡ : LeftCongruent M _∙_
   ∙-congˡ {x} {y} {z} x∈M y∈M z∈M = ap (_∙ z) x∈M y∈M
@@ -25,39 +25,46 @@ record IsMagma (M : A → Set ℓ) (_∙_ : A → A → A)
   ∙-congʳ : RightCongruent M _∙_
   ∙-congʳ  {x} {y} {z} x∈M y∈M z∈M = ap (z ∙_ ) x∈M y∈M
 
-record _IsSubmagmaOf_ (N : A → Set ℓ) (M : A → Set ℓ)
-                    (∙ : A → A → A) : Set (a ⊔ suc ℓ) where
+  ∙-sum : (S T : A → Set) → A → Set
+  ∙-sum S T z
+    = Σ[ x ∈ A ] (Σ[ y ∈ A ] ((S x) × ((T y) × ((x ∙ y) ≈ z))))
+
+record _IsSubmagmaOf_
+          (N : A → Set)
+          (M : A → Set)
+          (∙ : A → A → A) : Set₁ where
   field
     N⊆M         : N ⊆ M
     M-isMagma   : IsMagma M ∙
     _∙-close-N_ : Closed₂ N ∙
   open IsMagma M-isMagma
 
-  N-isSubsetoidOf-M : N IsSubsetoidOf M
-  N-isSubsetoidOf-M = record
-    { T⊆S        = N⊆M
-    ; S-isSetoid = isSetoid
+  N-isSubsetOf-M : N IsSubsetOf M
+  N-isSubsetOf-M = record
+    { T⊆S     = N⊆M
+    ; S-isSet = isSet
     }
 
-  isSetoid-N : IsSetoid N
-  isSetoid-N = _IsSubsetoidOf_.T-isSetoid N-isSubsetoidOf-M
+  isSet-N : IsSet N
+  isSet-N = _IsSubsetOf_.T-isSet N-isSubsetOf-M
 
   N-isMagma : IsMagma N ∙
   N-isMagma = record
-    { isSetoid  = isSetoid-N
+    { isSet  = isSet-N
     ; _∙-close_ = _∙-close-N_
     }
 
-record IsSemigroup (S : A → Set ℓ) (∙ : A → A → A)
-                                      : Set (a ⊔ suc ℓ) where
+record IsSemigroup (S : A → Set) (∙ : A → A → A)
+                                      : Set₁ where
   field
     isMagma : IsMagma S ∙
     ∙-assoc   : Associative S ∙
 
   open IsMagma isMagma public
 
-record _IsSubsemigroupOf_ (T : A → Set ℓ) (S : A → Set ℓ)
-                        (∙ : A → A → A) : Set (a ⊔ suc ℓ) where
+record _IsSubsemigroupOf_
+          (T : A → Set) (S : A → Set)
+          (∙ : A → A → A) : Set₁ where
   field
     T⊆S : T ⊆ S
     S-isSemigroup : IsSemigroup S ∙
@@ -85,16 +92,16 @@ record _IsSubsemigroupOf_ (T : A → Set ℓ) (S : A → Set ℓ)
     ; ∙-assoc = ∙-assoc-T
     }
 
-record IsBand (S : A → Set ℓ) (∙ : A → A → A)
-                                      : Set (a ⊔ suc ℓ) where
+record IsBand (B : A → Set) (∙ : A → A → A)
+                            : Set₁ where
   field
-    isSemigroup : IsSemigroup S ∙
-    idem        : Idempotent S ∙
+    isSemigroup : IsSemigroup B ∙
+    idem        : Idempotent B ∙
 
   open IsSemigroup isSemigroup public
 
-record IsSemilattice (S : A → Set ℓ) (∧ : A → A → A)
-                                      : Set (a ⊔ suc ℓ) where
+record IsSemilattice (S : A → Set) (∧ : A → A → A)
+                            : Set₁  where
   field
     isBand : IsBand S ∧
     comm   : Commutative S ∧

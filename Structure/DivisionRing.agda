@@ -1,6 +1,6 @@
 module Structure.DivisionRing
-        {a ℓ} {A : Set a}
-        (_≈_ : A → A → Set ℓ)where
+        {A : Set}
+        (_≈_ : A → A → Set) where
 
 open import Structure.Subtype
 
@@ -11,9 +11,9 @@ open import Structure.Logic
 open import Level using (_⊔_; suc)
 
 
-record IsDivisionRing (R : A → Set ℓ)
-          (_+_ _*_ : A → A → A)
-          (0# 1# : A) (- _⁻¹ : A → A) : Set (a ⊔ suc ℓ) where
+record IsDivisionRing
+          (R : A → Set) (_+_ _*_ : A → A → A)
+          (0# 1# : A) (- _⁻¹ : A → A) : Set₁ where
   field
     isRing          : IsRing R _+_ _*_ 0# 1# -
     _⁻¹-close\[0]   : Closed₁ (R \[ _≈ 0# ]) _⁻¹
@@ -24,14 +24,14 @@ record IsDivisionRing (R : A → Set ℓ)
   R\[0]⊆R : (R \[ _≈ 0# ]) ⊆ R
   R\[0]⊆R (x∈R , _) = x∈R
 
-  [0]-isSubsetoidOf-R : (R \[ _≈ 0# ]) IsSubsetoidOf R
-  [0]-isSubsetoidOf-R = record
-    { T⊆S        = R\[0]⊆R
-    ; S-isSetoid = isSetoid
+  [0]-isSubsetOf-R : (R \[ _≈ 0# ]) IsSubsetOf R
+  [0]-isSubsetOf-R = record
+    { T⊆S     = R\[0]⊆R
+    ; S-isSet = isSet
     }
 
-  isSetoid\[0] : IsSetoid (R \[ _≈ 0# ])
-  isSetoid\[0] = _IsSubsetoidOf_.T-isSetoid [0]-isSubsetoidOf-R
+  isSet\[0] : IsSet (R \[ _≈ 0# ])
+  isSet\[0] = _IsSubsetOf_.T-isSet [0]-isSubsetOf-R
 
   ⁻¹-cong\[0] : Congruent₁ (R \[ _≈ 0# ]) _⁻¹
   ⁻¹-cong\[0] (x∈R , _) (y∈R , _) = ap _⁻¹ x∈R y∈R
