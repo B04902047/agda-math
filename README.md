@@ -18,7 +18,6 @@ An alternative construction of basic algebraic structures other than the Agda st
 
 - Basic reasoning for preorder and equivalence on such definition for structures are also provided.
 
-- This repository uses the Agda standard library, and should be put under the same path as it is.
 
 ## Content
 - Basic
@@ -35,7 +34,13 @@ An alternative construction of basic algebraic structures other than the Agda st
   - OrderedField : a Field equipped with a total order
   - CompleteOrderedField : the Real number
 - Others
-  - Logic : where basic logical tools are defined or import publicly
+  - Logic : where basic logical tools are defined or import publiclym which depends on the Agda standart library
   - Properties : basic properties when defining algebraic structures
   - Number : the construction of the number system
   - Morphism : basic properties of functions
+  
+## Dependences on the Agda standard Library
+  - Reasoning.Preorder : Relation.Binary.PropositionalEquality
+  - Equality : Relation.Binary.PropositionalEquality
+  - Logic : Data.Sum, Data.Product, Data.Empty, Relation.Nullary, Function
+  - Numebr : Data.Nat
