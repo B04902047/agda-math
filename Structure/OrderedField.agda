@@ -6,6 +6,7 @@ open import Structure.Field _≈_
 open import Structure.Properties _≈_
 open import Structure.Subtype
 
+open import Data.List hiding ([_])
 open import Data.Nat
   renaming
   ( ℕ to ℕ
@@ -14,6 +15,9 @@ open import Data.Nat
   ; _<_ to _<ᴺ_
   ; _>_ to _>ᴺ_
   )
+open import Structure.Number
+  renaming
+  (≤-trans to ≤ᴺ-trans)
 
 open import Structure.Logic
 
@@ -329,9 +333,41 @@ record IsOrderedField
                               -1≈0 = ≤-anti-sym (-‿close 1-close) 0-close -1≤0 -1≥0
                               1≈0 = lemma-1-1-5-ii-2 1-close -1≈0
                               false = 1!≈0 1≈0
-  prop-1-1-2-xiii : 0# ≤ 1#
-  prop-1-1-2-xiii = [ id , lemma-1-1-2-xiii ] (sign 1-close)
+  1≥0 : 0# ≤ 1#
+  1≥0 = [ id , lemma-1-1-2-xiii ] (sign 1-close)
 
+  ≤-‿comp : {x y : A} → F x → F y → x ≤ y → - y ≤ - x
+  ≤-‿comp {x} {y} x∈F y∈F x≤y = ≤-begin
+                        - y
+                      ≈≤˘⟨ -‿close y∈F , negativeUnit y∈F ⟩
+                        (- 1#) * y
+                      ≈≤⟨ -‿close 1-close *-close y∈F , *-comm (-‿close 1-close) y∈F ⟩
+                        y * (- 1#)
+                      ≤≈⟨ y∈F *-close -‿close 1-close , prop-1-1-2-xi-2 x∈F y∈F (-‿close 1-close) x≤y (≥-‿reverse 1-close 1≥0) ⟩
+                        x * (- 1#)
+                      ≈⟨ x∈F *-close -‿close 1-close , *-comm x∈F (-‿close 1-close) ⟩
+                        (- 1#) * x
+                      ≈⟨ -‿close 1-close *-close x∈F , negativeUnit x∈F ⟩
+                        - x
+                      ∎⟨ -‿close x∈F ⟩
+
+  <-‿comp : {x y : A} → F x → F y → x < y → - y < - x
+  <-‿comp {x} {y} x∈F y∈F (x≤y , x≉y)
+    = ( ≤-‿comp x∈F y∈F x≤y
+      , λ -y≈-x → x≉y (
+        begin
+            x
+          ≈˘⟨ x∈F , -‿doubleInverse x∈F ⟩
+            - (- x)
+          ≈˘⟨ -‿close (-‿close x∈F) , -‿cong (-‿close y∈F) (-‿close x∈F) -y≈-x ⟩
+            - (- y)
+          ≈⟨ -‿close (-‿close y∈F) , -‿doubleInverse y∈F ⟩
+            y
+          ∎⟨ y∈F ⟩
+        )
+      )
+  <-‿moveˡ : {x y : A} → F x → F y → - x < y → - y < x
+  <-‿moveˡ x∈F y∈F -x<y = <≈-trans (-‿close y∈F) (-‿close (-‿close x∈F)) x∈F (<-‿comp (-‿close x∈F) y∈F -x<y) (-‿doubleInverse x∈F)
 
   ≤*-sign : {x y : A} → F x → F y
         → (x ≥ 0# ⊎ x ≤ 0#)
@@ -365,11 +401,79 @@ record IsOrderedField
   -- postulate
   --
 
-  lemma-triIneq-1 : {x y : A} → F x → F y
+  lemma-triIneq-1-1 : {x y : A} → F x → F y
                     → (x' : x ≥ 0# ⊎ x ≤ 0#)
                     → x ≤ y → - x ≤ y → ∣ x ∣ x' ≤ y
-  lemma-triIneq-1 x∈F y∈F (inj₁ x≥0) x≤y _ = x≤y
-  lemma-triIneq-1 x∈F y∈F (inj₂ x≤0) _ = id
+  lemma-triIneq-1-1 x∈F y∈F (inj₁ x≥0) x≤y _ = x≤y
+  lemma-triIneq-1-1 x∈F y∈F (inj₂ x≤0) _ = id
+
+  lemma-triIneq-1-2 : {x y : A} → F x → F y
+                    → (x' : x ≥ 0# ⊎ x ≤ 0#)
+                    → ∣ x ∣ x' ≤ y
+                    → (x ≤ y) × (- x ≤ y)
+  lemma-triIneq-1-2 x∈F y∈F (inj₁ x≥0) x≤y = (x≤y , ≤-trans -x∈F 0-close y∈F -x≤0 0≤y)
+    where -x∈F = -‿close x∈F
+          -x≤0 = ≥-‿reverse x∈F x≥0
+          0≤y = ≤-trans 0-close x∈F y∈F x≥0 x≤y
+  lemma-triIneq-1-2 x∈F y∈F (inj₂ x≤0) -x≤y = (≤-trans x∈F 0-close y∈F x≤0 0≤y , -x≤y)
+    where -x∈F = -‿close x∈F
+          0≤y = ≤-trans 0-close -x∈F y∈F (≤-‿reverse x∈F x≤0) -x≤y
+
+  lemma-triIneq-1-2' : {x y : A} → F x → F y
+                    → (x' : x ≥ 0# ⊎ x ≤ 0#)
+                    → ∣ x ∣ x' < y
+                    → (x < y) × (- x < y)
+  lemma-triIneq-1-2' x∈F y∈F (inj₁ x≥0) (x≤y , x≉y)
+    = ( (proj₁ (lemma-triIneq-1-2 x∈F y∈F (inj₁ x≥0) x≤y)
+        , x≉y
+        )
+      , (proj₂ (lemma-triIneq-1-2 x∈F y∈F (inj₁ x≥0) x≤y)
+        , λ -x≈y → x≉y (-x≈y→x≈y -x≈y)
+        ) -- (y ≈ -x ≤ 0 ≤ x ≤ y) → (y ≈ x) → ⊥
+      ) where -x≈y→y≤0 = λ -x≈y → ≈≤-trans y∈F (-‿close x∈F) 0-close (≈-sym (-‿close x∈F) y∈F -x≈y) (≥-‿reverse x∈F x≥0)
+              -x≈y→x≥y = λ -x≈y → ≤-trans y∈F 0-close x∈F (-x≈y→y≤0 -x≈y) x≥0
+              -x≈y→x≈y = λ -x≈y → ≤-anti-sym x∈F y∈F x≤y (-x≈y→x≥y -x≈y)
+
+  lemma-triIneq-1-2' x∈F y∈F (inj₂ x≤0) (-x≤y , -x≉y)
+    = ( (proj₁ (lemma-triIneq-1-2 x∈F y∈F (inj₂ x≤0) -x≤y)
+        , λ x≈y → -x≉y (x≈y→-x≈y x≈y)
+        )
+      , (proj₂ (lemma-triIneq-1-2 x∈F y∈F (inj₂ x≤0) -x≤y)
+        , -x≉y
+        ) -- (y ≈ x ≤ 0 ≤ -x ≤ y) → (y ≈ -x) → ⊥
+      ) where x≈y→y≤0 = λ x≈y → ≈≤-trans y∈F x∈F 0-close (≈-sym x∈F y∈F x≈y) x≤0
+              x≈y→-x≥y = λ x≈y → ≤-trans y∈F 0-close (-‿close x∈F) (x≈y→y≤0 x≈y) (≤-‿reverse x∈F x≤0)
+              x≈y→-x≈y = λ x≈y → ≤-anti-sym (-‿close x∈F) y∈F -x≤y (x≈y→-x≥y x≈y)
+
+
+  lemma-triIneq-2-1 : {x y : A} → F x → F y
+                    → (x' : x ≥ 0# ⊎ x ≤ 0#)
+                    → x ≤ y → - y ≤ x → ∣ x ∣ x' ≤ y
+  lemma-triIneq-2-1 x∈F y∈F (inj₁ x≥0) x≤y _ = x≤y
+  lemma-triIneq-2-1 {x} {y} x∈F y∈F (inj₂ x≤0) _ -y≤x
+    = ≤-begin
+      - x
+    ≤≈⟨ -‿close x∈F , ≤-‿comp (-‿close y∈F) x∈F -y≤x ⟩
+      - (- y)
+    ≈⟨ -‿close (-‿close y∈F) , -‿doubleInverse y∈F ⟩
+      y
+    ∎⟨ y∈F ⟩
+
+  lemma-triIneq-2-1' : {x y : A} → F x → F y
+                    → (x' : x ≥ 0# ⊎ x ≤ 0#)
+                    → x < y → - y < x → ∣ x ∣ x' < y
+  lemma-triIneq-2-1' x∈F y∈F (inj₁ x≥0) x<y _ = x<y
+  lemma-triIneq-2-1' {x} {y} x∈F y∈F (inj₂ x≤0) (x≤y , x≉y) (-y≤x , -y≉x)
+    = (-x≤y , -x≉y)
+    where -x≤y = lemma-triIneq-2-1 x∈F y∈F (inj₂ x≤0) x≤y -y≤x
+          -x≉y = λ -x≈y → -y≉x (begin
+                                  - y
+                                ≈˘⟨ -‿close y∈F , -‿cong (-‿close x∈F) y∈F -x≈y ⟩
+                                  - (- x)
+                                ≈⟨ -‿close (-‿close x∈F) , -‿doubleInverse x∈F ⟩
+                                  x
+                                ∎⟨ x∈F ⟩
+                                )
 
   lemma-triIneq-3 : {x : A} → F x
                     → (x' : x ≥ 0# ⊎ x ≤ 0#)
@@ -397,7 +501,7 @@ record IsOrderedField
                   → (y' : y ≥ 0# ⊎ y ≤ 0#)
                   → ∣ x + y ∣ (x∈F ≤+-sign y∈F) ≤ (∣ x ∣ x' + ∣ y ∣ y')
   ∣∣-triangleIneq {x} {y} x∈F y∈F x' y'
-    = lemma-triIneq-1 (x∈F +-close y∈F) ((∣ x∈F ∣-close  x') +-close (∣ y∈F ∣-close  y')) (x∈F ≤+-sign y∈F) x+y≤∣x∣+∣y∣ -x-y≤∣x∣+∣y∣
+    = lemma-triIneq-1-1 (x∈F +-close y∈F) ((∣ x∈F ∣-close  x') +-close (∣ y∈F ∣-close  y')) (x∈F ≤+-sign y∈F) x+y≤∣x∣+∣y∣ -x-y≤∣x∣+∣y∣
       where x+y≤∣x∣+∣y∣ = ≤-begin
                           x + y
                         ≤⟨ x∈F +-close y∈F , ≤+-compˡ x∈F (∣ x∈F ∣-close  x') y∈F (lemma-triIneq-3 x∈F x') ⟩
@@ -454,13 +558,7 @@ record IsOrderedField
                   → (y-sign : y ≥ 0# ⊎ y ≤ 0#)
                   → (x ≈ y)
                   → (d (x∈F , y∈F) x-sign y-sign ≈ 0#)
-  -- prop-1-1-6-ii-1 x∈F y∈F x-sign y-sign ∣x-y∣≈0
-  --   = begin
-  --     ?
-  --   ≈⟨ ? , ? ⟩
-  --     ?
-  --   where x-y≈0 = ?
-    -- prop-1-1-5-ii
+
 
   prop-1-1-6-ii : {x y : A} → (x∈F : F x) → (y∈F : F y)
                   → (x-sign : x ≥ 0# ⊎ x ≤ 0#)
@@ -474,7 +572,7 @@ record IsOrderedField
   --                 → (y-sign : y ≥ 0# ⊎ y ≤ 0#)
   --                 → d (x∈F , y∈F) x-sign y-sign ≈ d (y∈F , x∈F) y-sign x-sign
   -- prop-1-1-6-iii {x} {y} x∈F y∈F x-sign y-sign
-  --   = [ (λ _ → begin
+  --   = [ (λ x-y≥0 → begin
   --               x + (- y)
   --             ≈⟨ x∈F +-close (-‿close y∈F) , +-comm x∈F (-‿close y∈F) ⟩
   --               (- y) + x
@@ -483,7 +581,7 @@ record IsOrderedField
   --             ≈˘⟨ (-‿close y∈F) +-close (-‿close (-‿close x∈F)) , -‿distrib y∈F (-‿close x∈F) ⟩
   --               - (y + (- x))
   --             ∎⟨ -‿close (y∈F +-close (-‿close x∈F)) ⟩)
-  --     , (λ _ → begin
+  --     , (λ x-y≤0 → begin
   --               - (x + (- y))
   --             ≈⟨ -‿close (x∈F +-close (-‿close y∈F)) , -‿distrib x∈F (-‿close y∈F) ⟩
   --               (- x) + (- (- y))
@@ -560,19 +658,43 @@ record IsOrderedField
   (x +ᶠᵘⁿᶜ y) n = x n + y n
   --
   -- postulate
-  -- sandwich-lemma : {x y z : ℕ → A}
-  --                 → {x' : (n : ℕ) → F (x n)}
-  --                 → {y' : (n : ℕ) → F (y n)}
-  --                 → {z' : (n : ℕ) → F (z n)}
-  --                 → {a : A} → {a' : F a}
-  --                 → lim x' ≈ a' → lim y' ≈ a'
-  --                 → (Σ[ Nx₀ ∈ ℕ ] ({n : ℕ} → n ≥ᴺ Nx₀ → (x n ≤ z n)))
-  --                 → (Σ[ Ny₀ ∈ ℕ ] ({n : ℕ} → n ≥ᴺ Ny₀ → (x n ≤ z n)))
-  --                 → lim z' ≈ a'
-  -- sandwich-lemma limx≈a limy≈a (Nx₀ , xn≤zn) (Ny₀ , zn≤yn) {ε} ε∈F ε≥0
-  --   = {!   !}
-  --     where Nx₁ = proj₁ (limx≈a ε∈F ε≥0)
-  --           Ny₁ = proj₁ (limy≈a ε∈F ε≥0)
+  sandwich-lemma : {x y z : ℕ → A}
+                  → {x' : (n : ℕ) → F (x n)}
+                  → {y' : (n : ℕ) → F (y n)}
+                  → {z' : (n : ℕ) → F (z n)}
+                  → {a : A} → {a' : F a}
+                  → lim x' ≈ a' → lim y' ≈ a'
+                  → (Σ[ Nx₀ ∈ ℕ ] ({n : ℕ} → n ≥ᴺ Nx₀ → (x n ≤ z n)))
+                  → (Σ[ Ny₀ ∈ ℕ ] ({n : ℕ} → n ≥ᴺ Ny₀ → (z n ≤ y n)))
+                  → lim z' ≈ a'
+  sandwich-lemma {x} {y} {z} {x'} {y'} {z'} {a} {a'}
+    limx≈a limy≈a (Nx₀ , xn≤zn) (Ny₀ , zn≤yn) {ε} ε∈F ε≥0
+      = (N , n≥N→∣zn-a∣<ε)
+        where Nx₁ = proj₁ (limx≈a ε∈F ε≥0)
+              Ny₁ = proj₁ (limy≈a ε∈F ε≥0)
+              N = maxᴺ Nx₀ (Ny₀ ∷ Nx₁ ∷ Ny₁ ∷ [])
+              N≥Nx₀∷Ny₀∷Nx₁∷Ny₁ = max-order Nx₀ (Ny₀ ∷ Nx₁ ∷ Ny₁ ∷ [])
+              N≥Nx₀ = proj₁ N≥Nx₀∷Ny₀∷Nx₁∷Ny₁
+              N≥Ny₀ = proj₁ (proj₂ N≥Nx₀∷Ny₀∷Nx₁∷Ny₁)
+              N≥Nx₁ = proj₁ (proj₂ (proj₂ N≥Nx₀∷Ny₀∷Nx₁∷Ny₁))
+              N≥Ny₁ = proj₁ (proj₂ (proj₂ (proj₂ N≥Nx₀∷Ny₀∷Nx₁∷Ny₁)))
+              n≥N→n≥Nx₀ = λ {n : ℕ} → λ n≥N → (≤ᴺ-trans {Nx₀} {N} {n} N≥Nx₀ n≥N)
+              n≥N→n≥Ny₀ = λ {n : ℕ} → λ n≥N → (≤ᴺ-trans {Ny₀} {N} {n} N≥Ny₀ n≥N)
+              n≥N→n≥Nx₁ = λ {n : ℕ} → λ n≥N → (≤ᴺ-trans {Nx₁} {N} {n} N≥Nx₁ n≥N)
+              n≥N→n≥Ny₁ = λ {n : ℕ} → λ n≥N → (≤ᴺ-trans {Ny₁} {N} {n} N≥Ny₁ n≥N)
+              n≥N→zn-a≤yn-a = λ {n} → λ n≥N → ≤+-compˡ (z' n) (y' n) (-‿close a') (zn≤yn {n} (n≥N→n≥Ny₀ n≥N))
+              n≥N→∣yn-a∣<ε = proj₂ (limy≈a ε∈F ε≥0)
+              n≥N→yn-a<ε = λ {n} → λ n≥N → proj₁ (lemma-triIneq-1-2' (y' n +-close (-‿close a')) ε∈F (d-sign (y' n , a') (sign (y' n)) (sign a')) (n≥N→∣yn-a∣<ε (n≥N→n≥Ny₁ n≥N)))
+              n≥N→zn-a<ε = λ {n} → λ n≥N → ≤<-trans (z' n +-close (-‿close a')) (y' n +-close (-‿close a')) ε∈F (n≥N→zn-a≤yn-a n≥N) (n≥N→yn-a<ε n≥N)
+              n≥N→xn-a≤zn-a = λ {n} → λ n≥N → ≤+-compˡ (x' n) (z' n) (-‿close a') (xn≤zn {n} (n≥N→n≥Nx₀ n≥N))
+              n≥N→∣xn-a∣<ε = proj₂ (limx≈a ε∈F ε≥0)
+              n≥N→-xn+a<ε = λ {n} → λ n≥N → proj₂ (lemma-triIneq-1-2' (x' n +-close (-‿close a')) ε∈F (d-sign (x' n , a') (sign (x' n)) (sign a')) (n≥N→∣xn-a∣<ε (n≥N→n≥Nx₁ n≥N)))
+              n≥N→-ε<xn-a = λ {n : ℕ} → λ n≥N → <-‿moveˡ (x' n +-close (-‿close a')) ε∈F (n≥N→-xn+a<ε n≥N)
+              n≥N→-ε<zn-a = λ {n} → λ n≥N → <≤-trans (-‿close ε∈F) (x' n +-close (-‿close a')) (z' n +-close (-‿close a')) (n≥N→-ε<xn-a n≥N) (n≥N→xn-a≤zn-a n≥N)
+              n≥N→∣zn-a∣<ε = λ {n} → λ n≥N → lemma-triIneq-2-1' (z' n +-close (-‿close a')) ε∈F (d-sign ((z' n , a')) (sign (z' n)) (sign a')) (n≥N→zn-a<ε n≥N) (n≥N→-ε<zn-a n≥N)
+
+  -- -ε < xn - a ≤ zn - a ≤ yn - a < ε
+  -- lemma-triIneq-2-1
   --   prop-1-2-3 : {x : ℕ → A} → {a lb ub : A}
   --               → lim x ≈ a
   --               → ((n : ℕ) → lb ≤ a × a ≤ ub)

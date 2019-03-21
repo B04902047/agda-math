@@ -4,6 +4,7 @@ module Structure.OrderedSet {A : Set} (_≈_ : A → A → Set) where
 open import Structure.Setoid
 open import Structure.Properties
 open import Structure.Logic
+open import Data.List renaming ([_] to List)
 
 
 record IsOrderedSet (S : A → Set) (_≤_ : A → A → Set): Set₁ where
@@ -15,6 +16,28 @@ record IsOrderedSet (S : A → Set) (_≤_ : A → A → Set): Set₁ where
 
   ≤-refl : Reflexive _≤_ S
   ≤-refl {x} x∈S = A∨A→A (≤-connex x∈S x∈S)
+
+  ≤-max₂ : {x y : A} → S x → S y → A × ((x ≤ y) ⊎ (y ≤ x))
+  ≤-max₂ {x} {y} x∈S y∈S = [ (λ x≤y → (y , inj₁ x≤y)) , (λ y≤x → (x , inj₂ y≤x)) ] (≤-connex x∈S y∈S)
+
+  ≤-max₃ : {x y z : A} → S x → S y → S z
+                      → A × ((x ≤ y) ⊎ (y ≤ x))
+                          × ((y ≤ z) ⊎ (z ≤ y))
+                          × ((z ≤ x) ⊎ (x ≤ z))
+  ≤-max₃ {x} {y} {z} x∈S y∈S z∈S
+    = [ (λ y≤z
+        → [ (λ z≤x → (x , inj₂ (≤-trans y∈S z∈S x∈S y≤z z≤x) , inj₁ y≤z , inj₁ z≤x ))
+          , (λ x≤z → (z , xy-sign , inj₁ y≤z , inj₂ x≤z))
+          ] zx-sign
+        )
+      , (λ z≤y
+        → [ (λ x≤y → (y , inj₁ x≤y , inj₂ z≤y , zx-sign))
+          , (λ y≤x → (x , inj₂ y≤x , inj₂ z≤y , inj₁ (≤-trans z∈S y∈S x∈S z≤y y≤x)))
+          ] xy-sign)
+      ] yz-sign
+    where yz-sign = proj₂ (≤-max₂ y∈S z∈S)
+          zx-sign = proj₂ (≤-max₂ z∈S x∈S)
+          xy-sign = proj₂ (≤-max₂ x∈S y∈S)
 
   open IsSet isSet public
     renaming
@@ -112,25 +135,36 @@ record IsOrderedSet (S : A → Set) (_≤_ : A → A → Set): Set₁ where
 
   ≤≈-trans : {x y z : A} → S x → S y → S z
             → x ≤ y → y ≈ z → x ≤ z
-  ≤≈-trans {x} {y} {z} x∈S y∈S z∈S x≤y y≈z
-    = ≤-begin
-      x
-    ≤≈⟨ x∈S , x≤y ⟩
-      y
-    ≈⟨ y∈S , y≈z ⟩
-      z
-    ∎⟨ z∈S ⟩
+  ≤≈-trans {x} x∈S y∈S z∈S x≤y y≈z
+    = ≈-coerce (x ≤_) y∈S z∈S y≈z x≤y
+
+  <≈-trans : {x y z : A} → S x → S y → S z
+            → x < y → y ≈ z → x < z
+  <≈-trans {x} x∈S y∈S z∈S x<y y≈z
+    = ≈-coerce (x <_) y∈S z∈S y≈z x<y
+
 
   ≈≤-trans : {x y z : A} → S x → S y → S z
             → x ≈ y → y ≤ z → x ≤ z
-  ≈≤-trans {x} {y} {z} x∈S y∈S z∈S x≈y y≤z
-    = ≤-begin
-      x
-    ≈≤⟨ x∈S , x≈y ⟩
-      y
-    ≤≈⟨ y∈S , y≤z ⟩
-      z
-    ∎⟨ z∈S ⟩
+  ≈≤-trans {x} {y} {z} x∈S y∈S z∈S x≈y
+    = ≈-coerce (_≤ z) y∈S x∈S (≈-sym x∈S y∈S x≈y)
+
+  ≈<-trans : {x y z : A} → S x → S y → S z
+            → x ≈ y → y < z → x < z
+  ≈<-trans {x} {y} {z} x∈S y∈S z∈S x≈y
+    = ≈-coerce (_< z) y∈S x∈S (≈-sym x∈S y∈S x≈y)
+
+  ≤<-trans : {x y z : A} → S x → S y → S z
+            → x ≤ y → y < z → x < z
+  ≤<-trans x∈S y∈S z∈S x≤y (y≤z , y≉z) = (x≤z , x≉z)
+    where x≤z = ≤-trans x∈S y∈S z∈S x≤y y≤z
+          x≉z = λ x≈z → y≉z (≤-anti-sym y∈S z∈S y≤z (≈≤-trans z∈S x∈S y∈S (≈-sym x∈S z∈S x≈z) x≤y))
+
+  <≤-trans : {x y z : A} → S x → S y → S z
+            → x < y → y ≤ z → x < z
+  <≤-trans x∈S y∈S z∈S (x≤y , x≉y) y≤z = (x≤z , x≉z)
+    where x≤z = ≤-trans x∈S y∈S z∈S x≤y y≤z
+          x≉z = λ x≈z → x≉y (≤-anti-sym x∈S y∈S x≤y (≤≈-trans y∈S z∈S x∈S y≤z (≈-sym x∈S z∈S x≈z)))
 
   ≤≈-sandwich : {x y z : A} → S x → S y → S z
               → x ≤ z → z ≤ y

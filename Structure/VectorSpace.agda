@@ -49,6 +49,7 @@ record IsVectorSpace
     ;   ⁻¹-cong           to -ᵍ‿cong
     ;     ⁻¹-uniqueˡ      to -ᵍ‿uniqueˡ
     ;     ⁻¹-uniqueʳ      to -ᵍ‿uniqueʳ
+    ; ⁻¹-doubleInverse    to -ᵍ‿doubleInverse
     ;     ∙-cancelˡ       to +ᵍ-cancelˡ
     ;     ∙-cancelʳ       to +ᵍ-cancelʳ
     ;     _/_             to _-ᵍ_
@@ -91,6 +92,7 @@ record IsVectorSpace
     ;         -‿cong           to -ᶠ‿cong
     ;           -‿uniqueˡ      to -ᶠ‿uniqueˡ
     ;           -‿uniqueʳ      to -ᶠ‿uniqueʳ
+    ;           -‿doubleInverse to -ᶠ‿doubleInverse
     ;           +-cancelˡ       to +ᶠ-cancelˡ
     ;           +-cancelʳ       to +ᶠ-cancelʳ
     ;           _-_             to _-ᶠ_
