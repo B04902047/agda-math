@@ -29,7 +29,7 @@ An alternative construction of basic algebraic structures other than the Agda st
 - Algebra
   - Semigroup, Monoid, Group : Sets equipped with a binary operation
   - Ring, DivisionRing, Field : Sets equipped with two binary operations
-  - VectorSpace : an AbelianGroup with an Field acting on it
+  - VectorSpace : an AbelianGroup with a Field acting on it
 - Analysis
   - OrderedField : a Field equipped with a total order
   - CompleteOrderedField : the Real number
