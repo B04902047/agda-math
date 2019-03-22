@@ -12,11 +12,11 @@ An alternative construction of basic algebraic structures other than the Agda st
   - However, we will have to explicitly differenciate between the elements of a structure and those of the substructures, with different types and names.
 
 - In the alternative here, every structure is defined over a carrying type, with an equivalence relation and a predicate.
-  - elements under the same carrier share their names , while having different properties with the equivalence and the predicate, which indecates the substructures where they could belong.
+  - Elements under the same carrier share their names , while having different properties with the equivalence and the predicate, which indecates the substructures where they could belong.
   - This simplifies the notations when operating on the elements.
   - However, the subtype information hides into the proof, as the closure properties.
 
-- Basic reasoning for preorder and equivalence on such definition for structures are also provided.
+- Basic reasoning for preorders, equivalences, and ordered sets on such definition for structures are also provided.
 
 
 ## Content
