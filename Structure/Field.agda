@@ -12,24 +12,24 @@ record IsField
       (0# 1# : A) (- _⁻¹ : A → A) : Set₁ where
   field
     isDivisionRing : IsDivisionRing F _+_ _*_ 0# 1# - _⁻¹
-    *-comm         : Commutative F _*_
-    1!≈0           : ¬ (1# ≈ 0#)
+    _*-comm_       : Commutative F _*_
+    1≉0           : ¬ (1# ≈ 0#)
 
   open IsDivisionRing isDivisionRing public
 
   noNonzeroZeroDivisors : {x y : A} → F x → F y
                         → ¬ (x ≈ 0#) → ¬ (y ≈ 0#)
                         → ¬ ((x * y) ≈ 0#)
-  noNonzeroZeroDivisors {x} {y} x∈F y∈F x!≈0 y!≈0 x*y≈0
-    = 1!≈0 1≈0
+  noNonzeroZeroDivisors {x} {y} x∈F y∈F x≉0 y≉0 x*y≈0
+    = 1≉0 1≈0 --≉
     where
       1≈0 = begin
             1#
           ≈˘⟨ 1∈F , 1∈F 1-identityʳ ⟩
             1# * 1#
-          ≈˘⟨ 1∈F *-close 1∈F , *-congˡ x⁻¹*x∈F 1∈F 1∈F ((x∈F , x!≈0) ⁻¹-inverse\[0]ˡ) ⟩
+          ≈˘⟨ 1∈F *-close 1∈F , *-congˡ x⁻¹*x∈F 1∈F 1∈F ((x∈F , x≉0) ⁻¹-inverse\[0]ˡ) ⟩
             ((x ⁻¹) * x) * 1#
-          ≈˘⟨ x⁻¹*x∈F *-close 1∈F , *-congʳ (y∈F *-close y⁻¹∈F) 1∈F x⁻¹*x∈F ((y∈F , y!≈0) ⁻¹-inverse\[0]ʳ) ⟩
+          ≈˘⟨ x⁻¹*x∈F *-close 1∈F , *-congʳ (y∈F *-close y⁻¹∈F) 1∈F x⁻¹*x∈F ((y∈F , y≉0) ⁻¹-inverse\[0]ʳ) ⟩
             ((x ⁻¹) * x) * (y * (y ⁻¹))
           ≈˘⟨ x⁻¹*x∈F *-close (y∈F *-close y⁻¹∈F) , *-assoc x⁻¹*x∈F y∈F y⁻¹∈F ⟩
             (((x ⁻¹) * x) * y) * (y ⁻¹)
@@ -45,10 +45,10 @@ record IsField
           where
             1∈F = 1-close
             0∈F = 0-close
-            x⁻¹∈F = proj₁ ((x∈F , x!≈0) ⁻¹-close\[0])
-            x⁻¹!≈0 = proj₂ ((x∈F , x!≈0) ⁻¹-close\[0])
-            y⁻¹∈F = proj₁ ((y∈F , y!≈0) ⁻¹-close\[0])
-            y⁻¹!≈0 = proj₂ ((y∈F , y!≈0) ⁻¹-close\[0])
+            x⁻¹∈F = proj₁ ((x∈F , x≉0) ⁻¹-close\[0])
+            x⁻¹≉0 = proj₂ ((x∈F , x≉0) ⁻¹-close\[0])
+            y⁻¹∈F = proj₁ ((y∈F , y≉0) ⁻¹-close\[0])
+            y⁻¹≉0 = proj₂ ((y∈F , y≉0) ⁻¹-close\[0])
             x⁻¹*x∈F = x⁻¹∈F *-close x∈F
 
   isIntegralDomain : IsIntegralDomain F _+_ _*_ 0# 1# -
@@ -62,8 +62,8 @@ record IsField
     x : {x y : A} → F x → F y → ((x * y) ⁻¹) ≈ ((y ⁻¹) * (x ⁻¹))
 
   _*-close\[0]_ : Closed₂ (F \[ _≈ 0# ]) _*_
-  (x∈F , x!≈0) *-close\[0] (y∈F , y!≈0)
-    = (x∈F *-close y∈F , noNonzeroZeroDivisors x∈F y∈F x!≈0 y!≈0)
+  (x∈F , x≉0) *-close\[0] (y∈F , y≉0)
+    = (x∈F *-close y∈F , noNonzeroZeroDivisors x∈F y∈F x≉0 y≉0)
 
   *-isMagma\[0] : IsMagma (F \[ _≈ 0# ]) _*_
   *-isMagma\[0] = record
@@ -89,7 +89,7 @@ record IsField
   *-isMonoid\[0] : IsMonoid (F \[ _≈ 0# ]) _*_ 1#
   *-isMonoid\[0] = record
     { isSemigroup = *-isSemigroup\[0]
-    ; ε-close     = (1-close , 1!≈0)
+    ; ε-close     = (1-close , 1≉0)
     ; ε-identity  = (1-identityˡ\[0] , _1-identityʳ\[0])
     }
 
@@ -100,11 +100,11 @@ record IsField
     ; _⁻¹-inverse  = _⁻¹-inverse\[0]
     }
 
-  *-comm\[0] : Commutative (F \[ _≈ 0# ]) _*_
-  *-comm\[0] (x∈F , _ ) (y∈F , _ ) = *-comm x∈F y∈F
+  _*-comm\[0]_ : Commutative (F \[ _≈ 0# ]) _*_
+  _*-comm\[0]_ (x∈F , _ ) (y∈F , _ ) = x∈F *-comm y∈F
 
   *-isAbelianGroup\[0] : IsAbelianGroup (F \[ _≈ 0# ]) _*_ 1# _⁻¹
   *-isAbelianGroup\[0] = record
-    { isGroup = *-isGroup\[0]
-    ; ∙-comm   = *-comm\[0]
+    { isGroup    = *-isGroup\[0]
+    ; _∙-comm_   = _*-comm\[0]_
     }

@@ -173,8 +173,8 @@ record _IsSubgroupOf'_ (H G : A → Set) (_∙_ : A → A → A)
 record IsAbelianGroup (G : A → Set) (∙ : A → A → A)
                       (ε : A) (⁻¹ : A → A) : Set₁ where
   field
-    isGroup : IsGroup G ∙ ε ⁻¹
-    ∙-comm    : Commutative G ∙
+    isGroup  : IsGroup G ∙ ε ⁻¹
+    _∙-comm_ : Commutative G ∙
 
   open IsGroup isGroup public
 
@@ -183,5 +183,5 @@ record IsAbelianGroup (G : A → Set) (∙ : A → A → A)
     { isSemigroup = isSemigroup
     ; ε-close     = ε-close
     ; ε-identityˡ = ε-identityˡ
-    ; ∙-comm      = ∙-comm
+    ; _∙-comm_    = _∙-comm_
     }

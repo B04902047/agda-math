@@ -21,7 +21,7 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
 
   open IsAbelianGroup +-isAbelianGroup public
     renaming
-    ( ∙-comm              to +-comm
+    ( _∙-comm_            to _+-comm_
     ; isGroup             to +-isGroup
     ;   _⁻¹-close         to -‿close
     ;   _⁻¹-inverse       to -‿inverse
@@ -170,8 +170,8 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
 record IsCommutativeRing (R : A → Set) (+ * : A → A → A)
                          (0# 1# : A) (- : A → A) : Set₁ where
   field
-    isRing : IsRing R + * 0# 1# -
-    *-comm : Commutative R *
+    isRing   : IsRing R + * 0# 1# -
+    _*-comm_ : Commutative R *
 
   open IsRing isRing public
 
@@ -180,7 +180,7 @@ record IsCommutativeRing (R : A → Set) (+ * : A → A → A)
     { isSemigroup = *-isSemigroup
     ; ε-close     = 1-close
     ; ε-identityˡ = 1-identityˡ
-    ; ∙-comm        = *-comm
+    ; _∙-comm_    = _*-comm_
     }
 
 record IsIntegralDomain (R : A → Set) (_+_ _*_ : A → A → A)

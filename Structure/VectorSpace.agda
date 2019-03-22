@@ -40,7 +40,7 @@ record IsVectorSpace
 
   open ⟨A,≈ᵍ⟩.IsAbelianGroup G-isAbelianGroup public
     renaming
-    ( ∙-comm              to +ᵍ-comm
+    ( _∙-comm_            to _+ᵍ-comm_
     ; isGroup             to +ᵍ-isGroup
     ;   _⁻¹-close         to -ᵍ‿close
     ;   _⁻¹-inverse       to -ᵍ‿inverse
@@ -80,18 +80,18 @@ record IsVectorSpace
     )
   open ⟨B,≈ᶠ⟩.IsField F-isField public
     renaming
-    ( isDivisionRing to F-isDivisionRing
-    ;   isRing       to F-isRing
-    ;     +-isAbelianGroup  to +ᶠ-isAbelianGroup
-    ;       +-comm              to +ᶠ-comm
-    ;       +-isGroup             to +ᶠ-isGroup
-    ;         -‿close         to -ᶠ‿close
-    ;         -‿inverse       to -ᶠ‿inverse
-    ;          -‿inverseˡ    to -ᶠ‿inverseˡ
-    ;           -‿inverseʳ    to -ᶠ‿inverseʳ
-    ;         -‿cong           to -ᶠ‿cong
-    ;           -‿uniqueˡ      to -ᶠ‿uniqueˡ
-    ;           -‿uniqueʳ      to -ᶠ‿uniqueʳ
+    ( isDivisionRing            to F-isDivisionRing
+    ;   isRing                  to F-isRing
+    ;     +-isAbelianGroup      to +ᶠ-isAbelianGroup
+    ;       _+-comm_            to _+ᶠ-comm_
+    ;       +-isGroup           to +ᶠ-isGroup
+    ;         -‿close           to -ᶠ‿close
+    ;         -‿inverse         to -ᶠ‿inverse
+    ;          -‿inverseˡ       to -ᶠ‿inverseˡ
+    ;           -‿inverseʳ      to -ᶠ‿inverseʳ
+    ;         -‿cong            to -ᶠ‿cong
+    ;           -‿uniqueˡ       to -ᶠ‿uniqueˡ
+    ;           -‿uniqueʳ       to -ᶠ‿uniqueʳ
     ;           -‿doubleInverse to -ᶠ‿doubleInverse
     ;           +-cancelˡ       to +ᶠ-cancelˡ
     ;           +-cancelʳ       to +ᶠ-cancelʳ
@@ -114,27 +114,27 @@ record IsVectorSpace
     ;               +-congʳ     to +ᶠ-congʳ
     ;               +-sum       to +ᶠ-sum
     ;       +-isCommutativeMonoid to +ᶠ-isCommutativeMonoid
-    ;       _⁻¹-close\[0]   to _⁻¹ᶠ-close\[0]
-    ;       ⁻¹-cong\[0]     to ⁻¹ᶠ-cong\[0]
-    ;       _⁻¹-inverse\[0] to _⁻¹ᶠ-inverse\[0]
-    ;         _⁻¹-inverse\[0]ˡ to _⁻¹ᶠ-inverse\[0]ˡ
-    ;         _⁻¹-inverse\[0]ʳ to _⁻¹ᶠ-inverse\[0]ʳ
-    ;         *-cancel\[0]ˡ to *ᶠ-cancel\[0]ˡ
-    ;         *-cancel\[0]ʳ to *ᶠ-cancel\[0]ʳ
-    ;       _/_           to _/ᶠ_
-    ;       _/-close\[0]_ to _/ᶠ-close\[0]_
-    ;       /-cong\[0]ˡ   to /ᶠ-cong\[0]ˡ
-    ;       /-cong\[0]ʳ   to /ᶠ-cong\[0]ʳ
-    ;     *-isMonoid      to *ᶠ-isMonoid
-    ;       1-close         to 1ᶠ-close
-    ;       1-identity      to 1ᶠ-identity
-    ;         1-identityˡ   to 1ᶠ-identityˡ
-    ;         _1-identityʳ  to _1ᶠ-identityʳ
-    ;         1-uniqueˡ     to 1ᶠ-uniqueˡ
-    ;         1-uniqueʳ     to 1ᶠ-uniqueʳ
-    ;       *-isSemigroup     to *ᶠ-isSemigroup
-    ;         *-assoc       to *ᶠ-assoc
-    ;         *-isMagma       to *ᶠ-isMagma
+    ;       _⁻¹-close\[0]         to _⁻¹ᶠ-close\[0]
+    ;       ⁻¹-cong\[0]           to ⁻¹ᶠ-cong\[0]
+    ;       _⁻¹-inverse\[0]       to _⁻¹ᶠ-inverse\[0]
+    ;         _⁻¹-inverse\[0]ˡ    to _⁻¹ᶠ-inverse\[0]ˡ
+    ;         _⁻¹-inverse\[0]ʳ    to _⁻¹ᶠ-inverse\[0]ʳ
+    ;         *-cancel\[0]ˡ       to *ᶠ-cancel\[0]ˡ
+    ;         *-cancel\[0]ʳ       to *ᶠ-cancel\[0]ʳ
+    ;       _/_                   to _/ᶠ_
+    ;       _/-close\[0]_         to _/ᶠ-close\[0]_
+    ;       /-cong\[0]ˡ           to /ᶠ-cong\[0]ˡ
+    ;       /-cong\[0]ʳ           to /ᶠ-cong\[0]ʳ
+    ;     *-isMonoid              to *ᶠ-isMonoid
+    ;       1-close               to 1ᶠ-close
+    ;       1-identity            to 1ᶠ-identity
+    ;         1-identityˡ         to 1ᶠ-identityˡ
+    ;         _1-identityʳ        to _1ᶠ-identityʳ
+    ;         1-uniqueˡ           to 1ᶠ-uniqueˡ
+    ;         1-uniqueʳ           to 1ᶠ-uniqueʳ
+    ;       *-isSemigroup         to *ᶠ-isSemigroup
+    ;         *-assoc             to *ᶠ-assoc
+    ;         *-isMagma           to *ᶠ-isMagma
     ;           _*-close_   to _*ᶠ-close_
     ;           *-congˡ     to *ᶠ-congˡ
     ;           *-congʳ     to *ᶠ-congʳ
@@ -152,8 +152,8 @@ record IsVectorSpace
     ;   _0-zeroʳ          to _0ᶠ-zeroʳ
     ;   negativeUnit      to F-negativeUnit
     ;   -‿assoc           to -ᶠ‿assoc
-    ; *-comm              to *ᶠ-comm
-    ; 1!≈0                 to 1ᶠ!≈ᶠ0ᶠ
+    ; _*-comm_            to _*ᶠ-comm_
+    ; 1≉0                 to 1ᶠ≉ᶠ0ᶠ
     ;   noNonzeroZeroDivisors to F-noNonzeroZeroDivisors
     ;   isIntegralDomain      to F-isIntegralDomain
     ;   isSet\[0]             to F\[0]-isSet
@@ -165,10 +165,10 @@ record IsVectorSpace
     ;   *-isSemigroup\[0]     to *-isSemigroup\[0]
     ;   1-identityˡ\[0]       to 1ᶠ-identityˡ\[0]
     ;   _1-identityʳ\[0]      to _1ᶠ-identityʳ\[0]
-    ;   *-isMonoid\[0]       to *ᶠ-isMonoid\[0]
-    ;   *-isGroup\[0]        to *ᶠ-isGroup\[0]
-    ;   *-comm\[0]           to *ᶠ-comm\[0]
-    ;   *-isAbelianGroup\[0] to *ᶠ-isAbelianGroup\[0]
+    ;   *-isMonoid\[0]        to *ᶠ-isMonoid\[0]
+    ;   *-isGroup\[0]         to *ᶠ-isGroup\[0]
+    ;   _*-comm\[0]_          to _*ᶠ-comm\[0]_
+    ;   *-isAbelianGroup\[0]  to *ᶠ-isAbelianGroup\[0]
     )
     hiding
     ( _IsEquivalentTo_
@@ -268,13 +268,13 @@ record _IsSubspaceOf'_
   H-isGroup : ⟨A,≈ᵍ⟩.IsGroup H _+ᵍ_ 0ᵍ -ᵍ
   H-isGroup = ⟨A,≈ᵍ⟩._IsSubgroupOf'_.H-isGroup H-isSubgroupOf'-G
 
-  +ᵍ-comm-H : {x y : A} → H x → H y → (x +ᵍ y) ≈ᵍ (y +ᵍ x)
-  +ᵍ-comm-H x∈H y∈H = +ᵍ-comm (H⊆G x∈H) (H⊆G y∈H)
+  _+ᵍ-comm-H_ : {x y : A} → H x → H y → (x +ᵍ y) ≈ᵍ (y +ᵍ x)
+  x∈H +ᵍ-comm-H y∈H = (H⊆G x∈H) +ᵍ-comm (H⊆G y∈H)
 
   H-isAbelianGroup : ⟨A,≈ᵍ⟩.IsAbelianGroup H _+ᵍ_ 0ᵍ -ᵍ
   H-isAbelianGroup = record
-    { isGroup = H-isGroup
-    ; ∙-comm  = +ᵍ-comm-H
+    { isGroup   = H-isGroup
+    ; _∙-comm_  = _+ᵍ-comm-H_
     }
 
   *ᵛ-congˡ-H : {c d : B} {x : A} → F c → F d → H x

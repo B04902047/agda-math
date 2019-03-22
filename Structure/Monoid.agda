@@ -48,14 +48,14 @@ record IsCommutativeMonoid
     isSemigroup : IsSemigroup M _∙_
     ε-close     : Closed₀ M ε
     ε-identityˡ : LeftIdentity M _∙_ ε
-    ∙-comm      : Commutative M _∙_
+    _∙-comm_    : Commutative M _∙_
 
   open IsSemigroup isSemigroup public
 
   ε-identityʳ : RightIdentity M _∙_ ε
   ε-identityʳ {x} x∈M = begin
                         x ∙ ε
-                      ≈⟨ x∈M ∙-close ε-close , ∙-comm x∈M ε-close ⟩
+                      ≈⟨ x∈M ∙-close ε-close , x∈M ∙-comm ε-close ⟩
                         ε ∙ x
                       ≈⟨ ε-close ∙-close x∈M ,  ε-identityˡ x∈M ⟩
                         x
