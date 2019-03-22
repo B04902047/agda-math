@@ -23,8 +23,8 @@ An alternative construction of basic algebraic structures other than the Agda st
 - Basic
   - Subtype : basic operations for predicates
   - Reasoning : alternative reasoning tools under a predicate
-  - Equality : an euivalence relation with congurence and substitution
   - Setoid (Set) : a type equipped with a predicate and an equality relation
+  - Equality : where the proprositional equality is redifined
   - OrderedSet : a Set equipped with a total order
 - Algebra
   - Semigroup, Monoid, Group : Sets equipped with a binary operation
