@@ -3,6 +3,12 @@ module Basic.Subtype {A : Set} where
 
 open import Basic.Logic
 
+nonProper : A → Set
+nonProper _ = ⊤
+
+trivial : A → Set
+trivial _ = ⊥
+
 _\[_] : (P : A → Set) → (Q : A → Set) → A → Set
 P \[ Q ] = λ x → ((P x) × (¬ (Q x)))
 

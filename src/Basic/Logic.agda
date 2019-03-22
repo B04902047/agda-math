@@ -3,7 +3,8 @@ module Basic.Logic where
 
 open import Data.Product public
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) public
-open import Data.Empty using (⊥-elim) public
+open import Data.Empty using (⊥; ⊥-elim) public
+open import Data.Unit using (⊤) public
 
 open import Relation.Nullary using (¬_) public
 open import Function using (id; _∘_) public

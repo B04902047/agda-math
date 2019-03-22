@@ -1,8 +1,10 @@
 
 module Number.Natural where
 
+open import Number.Cardinality
 open import Basic.Logic
 open import Basic.Subtype
+open import Basic.Equality hiding (_≡_; refl)
 
 open import Data.Nat public
 open import Data.List hiding ([_])
@@ -11,6 +13,51 @@ open import Data.Unit using (⊤; tt)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; cong; subst)
 
+
+--open import Number.Cardinality {ℕ} _≡_
+open import Basic.Morphism
+
+open import Basic.Setoid
+
+_≡ᴺ_ : ℕ → ℕ → Set
+_≡ᴺ_ = _≡_
+
+idᴺ : ℕ → ℕ
+idᴺ = id
+
+ℕ-isSet : IsSet _≡_ (nonProper {ℕ})
+ℕ-isSet = ≡-isSet (nonProper {ℕ})
+
+id-isFunction : {A : Set} → (S : A → Set)
+                → IsFunction id _≡_ S _≡_ S
+id-isFunction S = record {
+                    S-isSet = ≡-isSet S
+                  ; T-isSet = ≡-isSet S
+                  ; φ-close = id
+                  }
+
+id-isInjective : {A : Set} → {S : A → Set}
+                → IsFunction.Injective (id-isFunction S)
+id-isInjective _ _ = id
+
+
+ℕ-isCountable : IsCountable _≡_ (nonProper {ℕ})
+ℕ-isCountable = record {
+                  f             = idᴺ
+                ; f-isFunction  = id-isFunction (nonProper)
+                ; f-injectivity = id-isInjective
+                }
+
+ℕ-isInfinite : IsInfinite _≡_ (nonProper {ℕ})
+ℕ-isInfinite = record {
+                  f             = idᴺ
+                ; f-isFunction  = id-isFunction (nonProper)
+                ; f-injectivity = id-isInjective
+                }
+
+ℕ-isCountablyInfinite : IsCountable _≡ᴺ_ (nonProper {ℕ})
+                      × IsInfinite _≡ᴺ_ (nonProper {ℕ})
+ℕ-isCountablyInfinite = (ℕ-isCountable , ℕ-isInfinite)
 
 n≤n : (n : ℕ) → n ≤ n
 n≤n zero    = z≤n

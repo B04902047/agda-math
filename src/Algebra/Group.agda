@@ -27,7 +27,7 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
   x∈G ⁻¹-inverseʳ = proj₂ (x∈G ⁻¹-inverse)
 
   ∙-cancelˡ : {x y z : A} → G x → G y → G z
-              →  (z ∙ x) ≈ (z ∙ y) → x ≈ y
+              → (z ∙ x) ≈ (z ∙ y) → x ≈ y
   ∙-cancelˡ {x} {y} {z} x∈G y∈G z∈G z∙x≈z∙y
     = begin
       x

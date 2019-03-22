@@ -15,6 +15,9 @@ record IsCompleteOrderedField
     isOrderedField : IsOrderedField ℝ _+_ _*_ 0# 1# - _⁻¹ _≤_
     completeness   : IsOrderedField.MonotoneSequeceProperty isOrderedField
 
+  cauchyCompleteness   : IsOrderedField.CauchyComplete isOrderedField
+
+
   open IsOrderedField isOrderedField public
 
 record IsCompleteOrderedField'
