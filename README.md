@@ -38,6 +38,7 @@ An alternative construction of basic algebraic structures other than the Agda st
   - Properties : basic properties when defining algebraic structures
   - Number : the construction of the number system
   - Morphism : basic properties of functions
+  - Cardinality : defines countability, infiniteness, and finiteness
   
 ## Dependences on the Agda standard Library
   - Reasoning.Preorder : Relation.Binary.PropositionalEquality
