@@ -39,7 +39,7 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
     ;     /-congˡ         to -‿congˡ
     ;     /-congʳ         to -‿congʳ
     ;   isMonoid          to +-isMonoid
-    ;     ε-close         to 0-close
+    ;     ε∈G             to 0∈R
     ;     ε-identity      to 0-identity
     ;       ε-identityˡ   to 0-identityˡ
     ;       _ε-identityʳ  to _0-identityʳ
@@ -58,7 +58,7 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
   open IsMonoid *-isMonoid public
     using ()
     renaming
-    ( ε-close         to 1-close
+    ( ε∈M             to 1∈R
     ; ε-identity      to 1-identity
     ;   ε-identityˡ   to 1-identityˡ
     ;   _ε-identityʳ  to _1-identityʳ
@@ -90,8 +90,7 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
     ≈⟨ 0*x∈R +-close -0*x∈R , -‿inverseʳ 0*x∈R ⟩
       0#
     ∎⟨ 0∈R ⟩
-    where 0∈R    = 0-close
-          0*x∈R  = 0∈R *-close x∈R
+    where 0*x∈R  = 0∈R *-close x∈R
           -0*x∈R = -‿close 0*x∈R
 
   _0-zeroʳ : RightZero R _*_ 0#
@@ -111,8 +110,7 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
     ≈⟨ x*0∈R +-close -x*0∈R , -‿inverseʳ x*0∈R ⟩
       0#
     ∎⟨ 0∈R ⟩
-    where 0∈R    = 0-close
-          x*0∈R  = x∈R *-close 0∈R
+    where x*0∈R  = x∈R *-close 0∈R
           -x*0∈R = -‿close x*0∈R
 
   negativeUnit : {x : A} → R x → ((- 1#) * x) ≈ (- x)
@@ -136,9 +134,7 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
     ≈⟨ 0∈R +-close -x∈R , 0-identityˡ -x∈R ⟩
       - x
     ∎⟨ -‿close x∈R ⟩
-    where 0∈R = 0-close
-          1∈R = 1-close
-          -1∈R = -‿close 1-close
+    where -1∈R = -‿close 1∈R
           -x∈R = -‿close x∈R
           1*x∈R = 1∈R *-close x∈R
           -1*x∈R = -1∈R *-close x∈R
@@ -148,11 +144,11 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
   -‿assoc : {x y : A} → R x → R y → ((- x) * y) ≈ (- (x * y))
   -‿assoc {x} {y} x∈R y∈R = begin
                             (- x) * y
-                          ≈˘⟨ (-‿close x∈R) *-close y∈R , *-congˡ ((-‿close 1-close) *-close x∈R) (-‿close x∈R) y∈R (negativeUnit x∈R) ⟩
+                          ≈˘⟨ (-‿close x∈R) *-close y∈R , *-congˡ ((-‿close 1∈R) *-close x∈R) (-‿close x∈R) y∈R (negativeUnit x∈R) ⟩
                             ((- 1#) * x) * y
-                          ≈⟨ ((-‿close 1-close) *-close x∈R) *-close y∈R , *-assoc (-‿close 1-close) x∈R y∈R ⟩
+                          ≈⟨ ((-‿close 1∈R) *-close x∈R) *-close y∈R , *-assoc (-‿close 1∈R) x∈R y∈R ⟩
                             ((- 1#) * (x * y))
-                          ≈⟨ (-‿close 1-close) *-close (x∈R *-close y∈R) , negativeUnit (x∈R *-close y∈R) ⟩
+                          ≈⟨ (-‿close 1∈R) *-close (x∈R *-close y∈R) , negativeUnit (x∈R *-close y∈R) ⟩
                             - (x * y)
                           ∎⟨ -‿close (x∈R *-close y∈R) ⟩
   -‿distrib : {x y : A} → R x → R y → (- (x + y)) ≈ ((- x) + (- y))
@@ -160,14 +156,14 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
                               - (x + y)
                             ≈˘⟨ -‿close (x∈R +-close y∈R) , negativeUnit (x∈R +-close y∈R) ⟩
                               (- 1#) * (x + y)
-                            ≈⟨ (-‿close 1-close) *-close (x∈R +-close y∈R) , distribˡ (-‿close 1-close) x∈R y∈R ⟩
+                            ≈⟨ (-‿close 1∈R) *-close (x∈R +-close y∈R) , distribˡ (-‿close 1∈R) x∈R y∈R ⟩
                               ((- 1#) * x) + ((- 1#) * y)
-                            ≈⟨ ((-‿close 1-close) *-close x∈R) +-close ((-‿close 1-close) *-close y∈R) , +-congˡ ((-‿close 1-close) *-close x∈R) (-‿close x∈R) ((-‿close 1-close) *-close y∈R) (negativeUnit x∈R) ⟩
+                            ≈⟨ ((-‿close 1∈R) *-close x∈R) +-close ((-‿close 1∈R) *-close y∈R) , +-congˡ ((-‿close 1∈R) *-close x∈R) (-‿close x∈R) ((-‿close 1∈R) *-close y∈R) (negativeUnit x∈R) ⟩
                               (- x) + ((- 1#) * y)
-                            ≈⟨ (-‿close x∈R) +-close ((-‿close 1-close) *-close y∈R) , +-congʳ ((-‿close 1-close) *-close y∈R) (-‿close y∈R) (-‿close x∈R) (negativeUnit y∈R) ⟩
+                            ≈⟨ (-‿close x∈R) +-close ((-‿close 1∈R) *-close y∈R) , +-congʳ ((-‿close 1∈R) *-close y∈R) (-‿close y∈R) (-‿close x∈R) (negativeUnit y∈R) ⟩
                               (- x) + (- y)
                             ∎⟨ (-‿close x∈R) +-close (-‿close y∈R) ⟩
-  -- negativeUnit
+
 record IsCommutativeRing (R : A → Set) (+ * : A → A → A)
                          (0# 1# : A) (- : A → A) : Set₁ where
   field
@@ -179,7 +175,7 @@ record IsCommutativeRing (R : A → Set) (+ * : A → A → A)
   *-isCommutativeMonoid : IsCommutativeMonoid R * 1#
   *-isCommutativeMonoid =  record
     { isSemigroup = *-isSemigroup
-    ; ε-close     = 1-close
+    ; ε∈M         = 1∈R
     ; ε-identityˡ = 1-identityˡ
     ; _∙-comm_    = _*-comm_
     }

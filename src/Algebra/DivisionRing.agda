@@ -47,7 +47,7 @@ record IsDivisionRing
       x
     ≈˘⟨ x∈R , 1-identityˡ x∈R ⟩
       1# * x
-    ≈˘⟨ 1-close *-close x∈R , *-congˡ (z⁻¹∈R *-close z∈R) 1-close x∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ˡ) ⟩
+    ≈˘⟨ 1∈R *-close x∈R , *-congˡ (z⁻¹∈R *-close z∈R) 1∈R x∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ˡ) ⟩
       ((z ⁻¹) * z) * x
     ≈⟨ (z⁻¹∈R *-close z∈R) *-close x∈R , *-assoc z⁻¹∈R z∈R x∈R ⟩
       (z ⁻¹) * (z * x)
@@ -55,9 +55,9 @@ record IsDivisionRing
       (z ⁻¹) * (z * y)
     ≈˘⟨ z⁻¹∈R *-close (z∈R *-close y∈R) , *-assoc z⁻¹∈R z∈R y∈R ⟩
       ((z ⁻¹) * z) * y
-    ≈⟨ (z⁻¹∈R *-close z∈R) *-close y∈R , *-congˡ (z⁻¹∈R *-close z∈R) 1-close y∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ˡ) ⟩
+    ≈⟨ (z⁻¹∈R *-close z∈R) *-close y∈R , *-congˡ (z⁻¹∈R *-close z∈R) 1∈R y∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ˡ) ⟩
       1# * y
-    ≈⟨ 1-close *-close y∈R , 1-identityˡ y∈R ⟩
+    ≈⟨ 1∈R *-close y∈R , 1-identityˡ y∈R ⟩
       y
     ∎⟨ y∈R ⟩
     where
@@ -71,7 +71,7 @@ record IsDivisionRing
       x
     ≈˘⟨ x∈R , x∈R 1-identityʳ ⟩
       x * 1#
-    ≈˘⟨ x∈R *-close 1-close , *-congʳ (z∈R *-close z⁻¹∈R) 1-close x∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ʳ) ⟩
+    ≈˘⟨ x∈R *-close 1∈R , *-congʳ (z∈R *-close z⁻¹∈R) 1∈R x∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ʳ) ⟩
       x * (z * (z ⁻¹))
     ≈˘⟨ x∈R *-close (z∈R *-close z⁻¹∈R) , *-assoc x∈R z∈R z⁻¹∈R ⟩
       (x * z) * (z ⁻¹)
@@ -79,9 +79,9 @@ record IsDivisionRing
       (y * z) * (z ⁻¹)
     ≈⟨ (y∈R *-close z∈R) *-close z⁻¹∈R , *-assoc y∈R z∈R z⁻¹∈R ⟩
       y * (z * (z ⁻¹))
-    ≈⟨ y∈R *-close (z∈R *-close z⁻¹∈R) , *-congʳ (z∈R *-close z⁻¹∈R) 1-close y∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ʳ) ⟩
+    ≈⟨ y∈R *-close (z∈R *-close z⁻¹∈R) , *-congʳ (z∈R *-close z⁻¹∈R) 1∈R y∈R ((z∈R , z!≈0) ⁻¹-inverse\[0]ʳ) ⟩
       y * 1#
-    ≈⟨ y∈R *-close 1-close , y∈R 1-identityʳ ⟩
+    ≈⟨ y∈R *-close 1∈R , y∈R 1-identityʳ ⟩
       y
     ∎⟨ y∈R ⟩
     where
@@ -117,3 +117,20 @@ record IsDivisionRing
       ≈⟨ z∈R /-close\[0] (x∈R,x!≈0) , *-congʳ (proj₁ ((x∈R,x!≈0) ⁻¹-close\[0])) (proj₁ ((y∈R,y!≈0) ⁻¹-close\[0])) z∈R (⁻¹-cong\[0] (x∈R,x!≈0) (y∈R,y!≈0) x≈y) ⟩
         z / y
       ∎⟨ z∈R /-close\[0] (y∈R,y!≈0) ⟩
+
+  prop-ix : {x : A} → R x → ¬ (x ≈ 0#) → ¬ ((x ⁻¹) ≈ 0#)
+  prop-ix {x} x∈R x≉0 x⁻¹≈0 = x≉0 x≈0
+    where x⁻¹∈R = proj₁ ((x∈R , x≉0) ⁻¹-close\[0])
+          x≈0 = begin
+                x
+              ≈˘⟨ x∈R , x∈R 1-identityʳ ⟩
+                x * 1#
+              ≈˘⟨ x∈R *-close 1∈R , *-congʳ (x∈R *-close x⁻¹∈R) 1∈R x∈R ((x∈R , x≉0) ⁻¹-inverse\[0]ʳ) ⟩
+                x * (x * (x ⁻¹))
+              ≈⟨ x∈R *-close (x∈R *-close x⁻¹∈R) , *-congʳ (x∈R *-close x⁻¹∈R) (x∈R *-close 0∈R) x∈R (*-congʳ x⁻¹∈R 0∈R x∈R x⁻¹≈0) ⟩
+                x * (x * 0#)
+              ≈⟨ x∈R *-close (x∈R *-close 0∈R) , *-congʳ (x∈R *-close 0∈R) 0∈R x∈R (x∈R 0-zeroʳ) ⟩
+                x * 0#
+              ≈⟨ x∈R *-close 0∈R , x∈R 0-zeroʳ ⟩
+                0#
+              ∎⟨ 0∈R ⟩

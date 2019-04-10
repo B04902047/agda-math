@@ -13,7 +13,7 @@ record IsMonoid (M : A → Set) (_∙_ : A → A → A) (ε : A)
                                   : Set₁ where
   field
     isSemigroup : IsSemigroup M _∙_
-    ε-close     : Closed₀ M ε
+    ε∈M         : M ε
     ε-identity  : Identity M _∙_ ε
 
   open IsSemigroup isSemigroup public
@@ -29,23 +29,23 @@ record IsMonoid (M : A → Set) (_∙_ : A → A → A) (ε : A)
                           e
                         ≈˘⟨ e∈M , e∈M ε-identityʳ ⟩
                           e ∙ ε
-                        ≈⟨ e∈M ∙-close ε-close , λx∈M→e∙x≈x ε-close ⟩
+                        ≈⟨ e∈M ∙-close ε∈M , λx∈M→e∙x≈x ε∈M ⟩
                           ε
-                        ∎⟨ ε-close ⟩
+                        ∎⟨ ε∈M ⟩
   ε-uniqueʳ : {e : A} → M e → ({x : A} → M x → ((x ∙ e) ≈ x)) → (e ≈ ε)
   ε-uniqueʳ {e} e∈M λx∈M→x∙e≈x = begin
                           e
                         ≈˘⟨ e∈M , ε-identityˡ e∈M ⟩
                           ε ∙ e
-                        ≈⟨ ε-close ∙-close e∈M , λx∈M→x∙e≈x ε-close ⟩
+                        ≈⟨ ε∈M ∙-close e∈M , λx∈M→x∙e≈x ε∈M ⟩
                           ε
-                        ∎⟨ ε-close ⟩
+                        ∎⟨ ε∈M ⟩
 
 record IsCommutativeMonoid
           (M : A → Set) (_∙_ : A → A → A) (ε : A) : Set₁ where
   field
     isSemigroup : IsSemigroup M _∙_
-    ε-close     : Closed₀ M ε
+    ε∈M     : Closed₀ M ε
     ε-identityˡ : LeftIdentity M _∙_ ε
     _∙-comm_    : Commutative M _∙_
 
@@ -54,9 +54,9 @@ record IsCommutativeMonoid
   ε-identityʳ : RightIdentity M _∙_ ε
   ε-identityʳ {x} x∈M = begin
                         x ∙ ε
-                      ≈⟨ x∈M ∙-close ε-close , x∈M ∙-comm ε-close ⟩
+                      ≈⟨ x∈M ∙-close ε∈M , x∈M ∙-comm ε∈M ⟩
                         ε ∙ x
-                      ≈⟨ ε-close ∙-close x∈M ,  ε-identityˡ x∈M ⟩
+                      ≈⟨ ε∈M ∙-close x∈M ,  ε-identityˡ x∈M ⟩
                         x
                       ∎⟨ x∈M ⟩
 
@@ -66,7 +66,7 @@ record IsCommutativeMonoid
   isMonoid : IsMonoid M _∙_ ε
   isMonoid = record {
       isSemigroup = isSemigroup
-    ; ε-close     = ε-close
+    ; ε∈M     = ε∈M
     ; ε-identity    = ε-identity
     }
 
@@ -96,7 +96,7 @@ record _IsSubmonoidOf'_
   field
     N⊆M         : N ⊆ M
     M-isMonoid  : IsMonoid M _∙_ ε
-    ε-close-N   : N ε
+    ε∈M-N   : N ε
     _∙-close-N_ : Closed₂ N _∙_
 
   open IsMonoid M-isMonoid
@@ -124,6 +124,6 @@ record _IsSubmonoidOf'_
   N-isMonoid : IsMonoid N _∙_ ε
   N-isMonoid = record
     { isSemigroup = N-isSemigroup
-    ; ε-close     = ε-close-N
+    ; ε∈M     = ε∈M-N
     ; ε-identity  = ε-identity-N
     }

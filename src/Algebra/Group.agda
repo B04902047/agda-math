@@ -16,6 +16,15 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
     _⁻¹-inverse : Inverse G _∙_ ε _⁻¹
 
   open IsMonoid isMonoid public
+    renaming (ε∈M to ε∈G)
+
+  private
+    _∙'_ : Closed₂ G _∙_
+    _∙'_ = _∙-close_
+    _⁻¹' : Closed₁ G _⁻¹
+    _⁻¹' = _⁻¹-close
+    ε' : G ε
+    ε' = ε∈G
 
   ⁻¹-cong : Congruent₁ G _⁻¹
   ⁻¹-cong = ap _⁻¹
@@ -27,13 +36,13 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
   x∈G ⁻¹-inverseʳ = proj₂ (x∈G ⁻¹-inverse)
 
   ∙-cancelˡ : {x y z : A} → G x → G y → G z
-              →  (z ∙ x) ≈ (z ∙ y) → x ≈ y
+              → (z ∙ x) ≈ (z ∙ y) → x ≈ y
   ∙-cancelˡ {x} {y} {z} x∈G y∈G z∈G z∙x≈z∙y
     = begin
       x
     ≈˘⟨ x∈G , ε-identityˡ x∈G ⟩
       ε ∙ x
-    ≈˘⟨ ε-close ∙-close x∈G , ∙-congˡ (z⁻¹∈G ∙-close z∈G) ε-close x∈G (z∈G ⁻¹-inverseˡ) ⟩
+    ≈˘⟨ ε∈G ∙-close x∈G , ∙-congˡ (z⁻¹∈G ∙-close z∈G) ε∈G x∈G (z∈G ⁻¹-inverseˡ) ⟩
       ((z ⁻¹) ∙ z) ∙ x
     ≈⟨ (z⁻¹∈G ∙-close z∈G) ∙-close x∈G , ∙-assoc z⁻¹∈G z∈G x∈G ⟩
       (z ⁻¹) ∙ (z ∙ x)
@@ -41,9 +50,9 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
       (z ⁻¹) ∙ (z ∙ y)
     ≈˘⟨ z⁻¹∈G ∙-close (z∈G ∙-close y∈G) , ∙-assoc z⁻¹∈G z∈G y∈G ⟩
       ((z ⁻¹) ∙ z) ∙ y
-    ≈⟨ (z⁻¹∈G ∙-close z∈G) ∙-close y∈G , ∙-congˡ (z⁻¹∈G ∙-close z∈G) ε-close y∈G (z∈G ⁻¹-inverseˡ) ⟩
+    ≈⟨ (z⁻¹∈G ∙-close z∈G) ∙-close y∈G , ∙-congˡ (z⁻¹∈G ∙-close z∈G) ε∈G y∈G (z∈G ⁻¹-inverseˡ) ⟩
       ε ∙ y
-    ≈⟨ ε-close ∙-close y∈G , ε-identityˡ y∈G ⟩
+    ≈⟨ ε∈G ∙-close y∈G , ε-identityˡ y∈G ⟩
       y
     ∎⟨ y∈G ⟩
     where z⁻¹∈G = z∈G ⁻¹-close
@@ -55,7 +64,7 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
       x
     ≈˘⟨ x∈G , x∈G ε-identityʳ ⟩
       x ∙ ε
-    ≈˘⟨ x∈G ∙-close ε-close , ∙-congʳ (z∈G ∙-close z⁻¹∈G) ε-close x∈G (z∈G ⁻¹-inverseʳ) ⟩
+    ≈˘⟨ x∈G ∙-close ε∈G , ∙-congʳ (z∈G ∙-close z⁻¹∈G) ε∈G x∈G (z∈G ⁻¹-inverseʳ) ⟩
       x ∙ (z ∙ (z ⁻¹))
     ≈˘⟨ x∈G ∙-close (z∈G ∙-close z⁻¹∈G) , ∙-assoc x∈G z∈G z⁻¹∈G ⟩
       (x ∙ z) ∙ (z ⁻¹)
@@ -63,9 +72,9 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
       (y ∙ z) ∙ (z ⁻¹)
     ≈⟨ (y∈G ∙-close z∈G) ∙-close z⁻¹∈G , ∙-assoc y∈G z∈G z⁻¹∈G ⟩
       y ∙ (z ∙ (z ⁻¹))
-    ≈⟨ y∈G ∙-close (z∈G ∙-close z⁻¹∈G) , ∙-congʳ (z∈G ∙-close z⁻¹∈G) ε-close y∈G (z∈G ⁻¹-inverseʳ) ⟩
+    ≈⟨ y∈G ∙-close (z∈G ∙-close z⁻¹∈G) , ∙-congʳ (z∈G ∙-close z⁻¹∈G) ε∈G y∈G (z∈G ⁻¹-inverseʳ) ⟩
       y ∙ ε
-    ≈⟨ y∈G ∙-close ε-close , y∈G ε-identityʳ ⟩
+    ≈⟨ y∈G ∙-close ε∈G , y∈G ε-identityʳ ⟩
       y
     ∎⟨ y∈G ⟩
     where z⁻¹∈G = z∈G ⁻¹-close
@@ -85,8 +94,7 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
       ≈⟨ ε∈G ∙-close y⁻¹∈G , ε-identityˡ y⁻¹∈G ⟩
         (y ⁻¹)
       ∎⟨ y⁻¹∈G ⟩
-      where ε∈G = ε-close
-            y⁻¹∈G = y∈G ⁻¹-close
+      where y⁻¹∈G = y∈G ⁻¹-close
 
   ⁻¹-uniqueʳ : {x y : A} → G x → G y → (x ∙ y) ≈ ε → y ≈ (x ⁻¹)
   ⁻¹-uniqueʳ {x} {y} x∈G y∈G x∙y≈ε
@@ -103,11 +111,30 @@ record IsGroup (G : A → Set) (_∙_ : A → A → A)
       ≈⟨ x⁻¹∈G ∙-close ε∈G , x⁻¹∈G ε-identityʳ ⟩
         (x ⁻¹)
       ∎⟨ x⁻¹∈G ⟩
-      where ε∈G = ε-close
-            x⁻¹∈G = x∈G ⁻¹-close
+      where x⁻¹∈G = x∈G ⁻¹-close
 
   ⁻¹-doubleInverse : {x : A} → G x → ((x ⁻¹) ⁻¹) ≈ x
-  ⁻¹-doubleInverse x∈F = sym x∈F ((x∈F ⁻¹-close) ⁻¹-close) (⁻¹-uniqueˡ x∈F (x∈F ⁻¹-close) (x∈F ⁻¹-inverseʳ))
+  ⁻¹-doubleInverse x∈G = sym x∈G ((x∈G ⁻¹-close) ⁻¹-close) (⁻¹-uniqueˡ x∈G (x∈G ⁻¹-close) (x∈G ⁻¹-inverseʳ))
+
+  ∙⁻¹-distrib : {x y : A} → G x → G y → ((x ∙ y) ⁻¹) ≈ ((y ⁻¹) ∙ (x ⁻¹))
+  ∙⁻¹-distrib {x} {y} x' y' = sym y⁻¹x⁻¹' (xy' ⁻¹-close) (⁻¹-uniqueʳ xy' y⁻¹x⁻¹' xyy⁻¹x⁻¹≈ε)
+    where x⁻¹' = x' ⁻¹'
+          y⁻¹' = y' ⁻¹'
+          xy' = x' ∙' y'
+          y⁻¹x⁻¹' = y⁻¹' ∙' x⁻¹'
+          xyy⁻¹x⁻¹≈ε = begin
+                        (x ∙ y) ∙ ((y ⁻¹) ∙ (x ⁻¹))
+                      ≈˘⟨ xy' ∙' y⁻¹x⁻¹' , ∙-assoc xy' y⁻¹' x⁻¹' ⟩
+                        ((x ∙ y) ∙ (y ⁻¹)) ∙ (x ⁻¹)
+                      ≈⟨ (xy' ∙' y⁻¹') ∙' x⁻¹' , ∙-congˡ (xy' ∙' y⁻¹') (x' ∙' (y' ∙' y⁻¹')) x⁻¹' (∙-assoc x' y' y⁻¹') ⟩
+                        (x ∙ (y ∙ (y ⁻¹))) ∙ (x ⁻¹)
+                      ≈⟨ (x' ∙' (y' ∙' y⁻¹')) ∙' x⁻¹' , ∙-congˡ (x' ∙' (y' ∙' y⁻¹')) (x' ∙' ε') x⁻¹' (∙-congʳ (y' ∙' y⁻¹') ε' x' (y' ⁻¹-inverseʳ)) ⟩
+                        (x ∙ ε) ∙ (x ⁻¹)
+                      ≈⟨ (x' ∙' ε') ∙' x⁻¹' , ∙-congˡ (x' ∙' ε') x' x⁻¹' (x' ε-identityʳ) ⟩
+                        x ∙ (x ⁻¹)
+                      ≈⟨ x' ∙' x⁻¹' , x' ⁻¹-inverseʳ ⟩
+                        ε
+                      ∎⟨ ε' ⟩
 
   _/_ : A → A → A
   x / y = x ∙ (y ⁻¹)
@@ -144,7 +171,7 @@ record _IsSubgroupOf'_ (H G : A → Set) (_∙_ : A → A → A)
     H⊆G         : H ⊆ G
     G-isGroup   : IsGroup G _∙_ ε _⁻¹
     _∙-close-H_ : Closed₂ H _∙_
-    ε-close-H   : H ε
+    ε∈G-H   : H ε
     _⁻¹-close-H : Closed₁ H _⁻¹
 
   open IsGroup G-isGroup renaming (isMonoid to G-isMonoid)
@@ -153,7 +180,7 @@ record _IsSubgroupOf'_ (H G : A → Set) (_∙_ : A → A → A)
   H-isSubmonoidOf'-G = record
     { N⊆M         = H⊆G
     ; M-isMonoid  = G-isMonoid
-    ; ε-close-N   = ε-close-H
+    ; ε∈M-N   = ε∈G-H
     ; _∙-close-N_ = _∙-close-H_
     }
 
@@ -181,7 +208,7 @@ record IsAbelianGroup (G : A → Set) (∙ : A → A → A)
   isCommutativeMonoid : IsCommutativeMonoid G ∙ ε
   isCommutativeMonoid = record
     { isSemigroup = isSemigroup
-    ; ε-close     = ε-close
+    ; ε∈M         = ε∈G
     ; ε-identityˡ = ε-identityˡ
     ; _∙-comm_    = _∙-comm_
     }

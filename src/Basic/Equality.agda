@@ -19,21 +19,21 @@ _≡_ : A → A → Set
 _≡_ = _≡'_
 
 refl : (S : A → Set) → Reflexive _≡_ S
-refl S _ = refl'
+refl _ _ = refl'
 
 trans : (S : A → Set) → Transitive _≡_ S
-trans S _ _ _ = trans'
+trans _ _ _ _ = trans'
 
 sym : (S : A → Set) → Symmetric _≡_ S
-sym S _ _ = sym'
+sym _ _ _ = sym'
 
 coerce : (S : A → Set) → {x y : A} (P : A → Set) → S x → S y
         → x ≡ y → P x → P y
-coerce S P _ _ = subst' P
+coerce _ P _ _ = subst' P
 
 ap : (S : A → Set) → {x y : A} (f : A → A) → S x → S y
       → x ≡ y → (f x) ≡ (f y)
-ap S f _ _ = cong' f
+ap _ f _ _ = cong' f
 
 ≡-isSet : (S : A → Set) → IsSet _≡_ S
 ≡-isSet S = record

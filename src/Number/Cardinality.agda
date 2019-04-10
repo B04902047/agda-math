@@ -11,23 +11,24 @@ open import Data.Nat
 open import Data.List hiding ([_])
 
 
-record IsCountable  (S : A → Set) : Set₁ where
+record IsCountable (S : A → Set) : Set₁ where
   field
-    isSet       : IsSet _≈_ S
-    f           : A → ℕ
-    injectivity : Injective _≈_ _≡_ f S (λ x → ℕ) isSet (≡-isSet (λ x → ℕ))
+    f             : A → ℕ
+    f-isFunction  : IsFunction f _≈_ S _≡_ (nonProper {ℕ})
+    f-injectivity : IsFunction.Injective f-isFunction
 
 record IsInfinite (S : A → Set) : Set₁ where
   field
-    isSet       : IsSet _≈_ S
-    f           : ℕ → A
-    injectivity : Injective _≡_ _≈_ f (λ x → ℕ) S (≡-isSet (λ x → ℕ)) isSet
+    f             : ℕ → A
+    f-isFunction  : IsFunction f _≡_ (nonProper {ℕ}) _≈_ S
+    f-injectivity : IsFunction.Injective f-isFunction
 
 record IsFinite (S : A → Set) : Set₁ where
   field
     isCountable : IsCountable S
     N           : ℕ
-    finite      : {x : A} → S x → (IsCountable.f isCountable x) ≤ N
+    finiteness  : {x : A} → S x
+                → (IsCountable.f isCountable x) ≤ N
 
   open IsCountable isCountable
   postulate

@@ -17,6 +17,16 @@ record IsCompleteOrderedField
 
   open IsOrderedField isOrderedField public
 
+  postulate
+    cauchyCompleteness   : IsOrderedField.CauchyComplete isOrderedField
+
+  data ℚ : A → Set where
+    z∈ℚ : {z : A} → ℤ z → ℚ z
+    z/n∈ℚ : {z n : A} → ℤ z → ℕ n → ℚ (z / n)
+  postulate
+    archimedean'  : {x y : A} → ℝ x → ℝ y → 0# < x → x < y
+                  → Σ[ k ∈ A ] (ℕ k) × y < (k * x)
+
 record IsCompleteOrderedField'
         (ℝ : A → Set)
         (_+_ _*_ : A → A → A)
@@ -27,3 +37,6 @@ record IsCompleteOrderedField'
     cauchyCompleteness   : IsOrderedField.CauchyComplete isOrderedField
 
   open IsOrderedField isOrderedField public
+
+  postulate
+    completeness   : IsOrderedField.MonotoneSequeceProperty isOrderedField
