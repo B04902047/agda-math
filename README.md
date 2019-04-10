@@ -1,4 +1,4 @@
-# algebraic-structures
+# algebraic-math
 
 An alternative construction of basic algebraic structures other than the Agda standard library
 
