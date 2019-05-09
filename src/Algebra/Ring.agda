@@ -139,6 +139,15 @@ record IsRing (R : A → Set) (_+_ _*_ : A → A → A)
           1*x∈R = 1∈R *-close x∈R
           -1*x∈R = -1∈R *-close x∈R
 
+  negativeZero : (- 0#) ≈ 0#
+  negativeZero = begin
+                - 0#
+              ≈˘⟨ -‿close 0∈R , negativeUnit 0∈R ⟩
+                (- 1#) * 0#
+              ≈⟨ (-‿close 1∈R) *-close 0∈R , (-‿close 1∈R) 0-zeroʳ ⟩
+                0#
+              ∎⟨ 0∈R ⟩
+
   -- postulate
   --   zeroRing : (1# ≈ 0#) → (a : A) → (¬ (¬ (a ≈ 1#)))
   -‿assoc : {x y : A} → R x → R y → ((- x) * y) ≈ (- (x * y))
