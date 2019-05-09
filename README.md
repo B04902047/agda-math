@@ -34,7 +34,7 @@ An alternative construction of basic algebraic structures other than the Agda st
   - Linear.VectorSpace : an AbelianGroup with a Field acting on it
 - Analysis
   - OrderedSet : a Set equipped with a total order
-  - OrderedField : a Field equipped with a total order
+  - OrderedField : a Field equipped with a total order. Limits, supremum, and completeness are defined here.
   - CompleteOrderedField : the Real number
 - Number : the construction of the number system
   - Natural
